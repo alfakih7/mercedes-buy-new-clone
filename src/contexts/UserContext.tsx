@@ -35,37 +35,37 @@ interface UserProfile {
   };
 }
 
-// Default mock user data for alfakih
+// Default mock user data for Ahmed Al Mansouri (replacing alfakih)
 const defaultUser: UserProfile = {
-  id: "1",
-  username: "alfakih7",
-  fullName: "Al Fakih",
-  email: "alfakih@example.com",
+  id: "AM001",
+  username: "ahmed.almansouri",
+  fullName: "Ahmed Al Mansouri",
+  email: "ahmed.almansouri@example.com",
   phone: "+971 50 123 4567",
-  avatar: "https://xsgames.co/randomusers/assets/avatars/male/45.jpg", // Random avatar
+  avatar: "/src/ahmed_almansori.png", // Use the same as UserProfile photo
   address: {
-    street: "123 Sheikh Zayed Road",
-    city: "Dubai",
-    state: "Dubai",
-    zipCode: "12345",
+    street: "",
+    city: "",
+    state: "",
+    zipCode: "",
     country: "United Arab Emirates"
   },
   preferences: {
-    favoriteModels: ["E-Class", "S-Class", "GLE"],
-    preferredColor: "Metallic Grey",
+    favoriteModels: ["S-Class", "GLE Coupe", "Stelvio"],
+    preferredColor: "Black",
     budget: {
-      min: 250000,
-      max: 500000
+      min: 0,
+      max: 0
     },
     financing: true
   },
   history: {
-    viewedCars: ["Mercedes-Benz E-Class E 300 Sedan", "Mercedes-Benz S 500 4MATIC Sedan"],
-    savedCars: ["Mercedes-Benz E-Class E 300 Sedan"],
+    viewedCars: ["Mercedes-Benz S 450", "Mercedes-Benz GLC 300"],
+    savedCars: ["Mercedes-Benz S 450"],
     testDrives: [
       {
-        date: "2025-05-15T10:00:00",
-        model: "Mercedes-Benz S-Class",
+        date: "2023-09-22",
+        model: "GLE 53 AMG",
         location: "Downtown Dubai Showroom"
       }
     ]

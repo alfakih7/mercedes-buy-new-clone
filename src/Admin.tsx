@@ -97,6 +97,24 @@ const Admin = () => {
                 opacity: 0;
               }
             }
+            @keyframes shimmer {
+              0% { background-position: -1000px 0; }
+              100% { background-position: 1000px 0; }
+            }
+            .card-hover-effect {
+              transition: transform 0.5s cubic-bezier(0.15, 0.9, 0.3, 1), box-shadow 0.5s cubic-bezier(0.15, 0.9, 0.3, 1);
+              transform-style: preserve-3d;
+            }
+            .card-hover-effect:hover {
+              transform: translateY(-12px) rotateX(10deg) rotateY(-5deg) scale(1.04);
+              box-shadow: 0 28px 65px rgba(0,0,0,0.15), 0 0 15px rgba(106, 27, 154, 0.2); /* Added a subtle accent glow */
+            }
+            .interactive-title-hover {
+              transition: color 0.3s ease, text-shadow 0.4s ease;
+            }
+            .interactive-title-hover:hover {
+              text-shadow: 0 0 8px rgba(0,0,0,0.15);
+            }
           `}
         </style>
       <div style={{ 
@@ -114,15 +132,15 @@ const Admin = () => {
           {/* Animated Background Logos */}
           <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
             {Array.from({ length: numLogos }).map((_, i) => {
-              const size = Math.random() * 80 + 40; // Random size between 40px and 120px
+              const size = Math.random() * 70 + 30; // Slightly smaller max size
               const startX = Math.random() * 100 + 'vw';
               const startY = Math.random() * 100 + 'vh';
-              const endX = (Math.random() * 100 - 50) + 'vw'; // Moves towards a general area
+              const endX = (Math.random() * 100 - 50) + 'vw'; 
               const endY = (Math.random() * 100 - 50) + 'vh';
-              const duration = Math.random() * 20 + 15; // Random duration between 15s and 35s
-              const delay = Math.random() * 15; // Random delay up to 15s
-              const scale = Math.random() * 0.5 + 0.5; // Random scale between 0.5 and 1
-              const maxOpacity = Math.random() * 0.03 + 0.02; // Subtle opacity
+              const duration = Math.random() * 25 + 20; // Slightly longer duration
+              const delay = Math.random() * 20; // Slightly longer delay
+              const scale = Math.random() * 0.4 + 0.4; // Slightly smaller scale
+              const maxOpacity = Math.random() * 0.02 + 0.01; // More subtle opacity
 
               return (
                 <MercedesLogo
@@ -152,13 +170,13 @@ const Admin = () => {
           onSubmit={handleLogin} 
           style={{ 
               background: themeColors.cardBackground,
-              padding: "40px 30px",
-              borderRadius: 16,
-              boxShadow: `0 10px 30px rgba(0,0,0,0.1)`,
+              padding: "40px 35px", // Increased horizontal padding
+              borderRadius: 20, // Increased border radius
+              boxShadow: `0 15px 35px rgba(0,0,0,0.08)`, // Softer shadow
               width: "100%",
-              maxWidth: 400,
-              position: "relative", // To ensure form is above the animated background
-              zIndex: 1, // To ensure form is above the animated background
+              maxWidth: 420, // Slightly wider
+              position: "relative", 
+              zIndex: 1, 
               overflow: "hidden",
               border: `1px solid ${themeColors.borderColor}`,
               transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease"
@@ -169,8 +187,10 @@ const Admin = () => {
             top: 0,
             left: 0,
             right: 0,
-              height: 5,
-              background: themeColors.headerGradient
+            height: 5,
+            background: themeColors.headerGradient,
+            animation: "shimmer 4s infinite linear", // Added shimmer animation
+            backgroundSize: "2000px 100%" // For shimmer effect
           }}></div>
           
           <h2 style={{ 
@@ -203,8 +223,8 @@ const Admin = () => {
               onChange={e => setUsername(e.target.value)}
               style={{ 
                 width: "100%", 
-                  padding: "14px 18px",
-                  borderRadius: 10,
+                  padding: "15px 20px", // Adjusted padding
+                  borderRadius: 12, // Increased border radius
                   border: `1px solid ${themeColors.borderColor}`,
                   background: themeColors.inputBackground,
                   color: themeColors.textPrimary,
@@ -230,8 +250,8 @@ const Admin = () => {
               onChange={e => setPassword(e.target.value)}
               style={{ 
                 width: "100%", 
-                  padding: "14px 18px",
-                  borderRadius: 10,
+                  padding: "15px 20px", // Adjusted padding
+                  borderRadius: 12, // Increased border radius
                   border: `1px solid ${themeColors.borderColor}`,
                   background: themeColors.inputBackground,
                   color: themeColors.textPrimary,
@@ -250,21 +270,29 @@ const Admin = () => {
             type="submit"
             style={{ 
               width: "100%", 
-                padding: "16px 10px",
-                borderRadius: 10,
-                background: themeColors.accentPurple,
-                color: themeColors.white,
+              padding: "18px 10px", // Increased padding
+              borderRadius: 12, // Increased border radius
+              background: themeColors.accentPurple,
+              color: themeColors.white,
               border: "none", 
               fontWeight: 600, 
-                fontSize: 17,
+              fontSize: 17,
               cursor: "pointer",
-                transition: "background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease",
-                boxShadow: `0 5px 15px ${themeColors.accentPurple}50`
+              transition: "background 0.4s ease, transform 0.2s ease, box-shadow 0.4s ease", // Refined transition
+              boxShadow: `0 7px 20px ${themeColors.accentPurple}50` // Softer, slightly larger shadow
             }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#500A7A' }
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = themeColors.accentPurple}
-              onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.98)'}
-              onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = `linear-gradient(45deg, ${themeColors.accentPurple}, #A142D8)`; // Brighter gradient on hover
+                e.currentTarget.style.boxShadow = `0 10px 30px ${themeColors.accentPurple}70`; // Enhanced shadow on hover
+                e.currentTarget.style.transform = 'scale(1.02)'; // Slight scale up on hover
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = themeColors.accentPurple;
+                e.currentTarget.style.boxShadow = `0 7px 20px ${themeColors.accentPurple}50`;
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+              onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.96)'} // Slightly more pronounced press
+              onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1.02)'} // Return to hover scale
           >
               Secure Login
           </button>
@@ -316,7 +344,7 @@ const Admin = () => {
       <header style={{ 
         background: themeColors.cardBackground,
         padding: "15px 30px",
-        boxShadow: `0 5px 20px rgba(0,0,0,0.07)`,
+        boxShadow: `0 6px 25px rgba(0,0,0,0.07)`, // Slightly refined shadow
         position: "sticky",
         top: 0,
         zIndex: 1000,
@@ -396,13 +424,15 @@ const Admin = () => {
       <div style={{ 
         maxWidth: 1600,
         margin: "30px auto",
-        padding: "0 20px"
+        padding: "0 20px",
+        perspective: "1500px" // Added for 3D transformations of child elements
       }}>
         <h1 style={{ 
           fontSize: 32,
           color: themeColors.textPrimary,
           marginBottom: 30,
-          fontWeight: 700
+          fontWeight: 700,
+          letterSpacing: "-0.5px" // Added for tighter, modern look
         }}>
           <span style={{ color: themeColors.accentPurple }}>CVM</span> Dashboard Overview
         </h1>
@@ -413,15 +443,15 @@ const Admin = () => {
           gap: 25,
           marginBottom: 35
         }}>
-          <div style={{ 
+          <div className="card-hover-effect" style={{ 
             background: themeColors.cardBackground,
-            borderRadius: 12, 
+            borderRadius: 16, // Standardized radius
             padding: "25px",
-            boxShadow: `0 8px 25px rgba(0,0,0,0.08)`,
+            boxShadow: `0 12px 35px rgba(0,0,0,0.07)`, // Standardized shadow
             position: "relative",
             overflow: "hidden",
             border: `1px solid ${themeColors.borderColor}`,
-            transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease"
+            transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease"
           }}>
             <div style={{
               position: "absolute",
@@ -429,7 +459,9 @@ const Admin = () => {
               left: 0,
               right: 0,
               height: 4,
-              background: themeColors.headerGradient
+              background: themeColors.headerGradient,
+              animation: "shimmer 4s infinite linear",
+              backgroundSize: "2000px 100%"
             }}></div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
               <div>
@@ -484,10 +516,10 @@ const Admin = () => {
             </div>
           </div>
           
-          <div style={{ 
-            background: themeColors.cardBackground, borderRadius: 12, padding: "25px", boxShadow: `0 8px 25px rgba(0,0,0,0.08)`, position: "relative", overflow: "hidden", border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease"
+          <div className="card-hover-effect" style={{ 
+            background: themeColors.cardBackground, borderRadius: 16, padding: "25px", boxShadow: `0 12px 35px rgba(0,0,0,0.07)`, position: "relative", overflow: "hidden", border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease"
           }}>
-            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, background: themeColors.headerGradient }}></div>
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, background: themeColors.headerGradient, animation: "shimmer 4s infinite linear", backgroundSize: "2000px 100%" }}></div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
               <div>
                 <div style={{ fontSize: 42, fontWeight: 700, color: themeColors.accentGold, marginBottom: 5 }}>120</div>
@@ -503,9 +535,9 @@ const Admin = () => {
                 <div key={i} style={{ 
                   height: animationsReady ? `${h}%` : '0%',
                   flex: 1, 
-                  background: i === 11 ? themeColors.accentGold : `${themeColors.accentGold}50`,
+                  background: i === 11 ? themeColors.accentGold : `${themeColors.accentGold}50`, // Reverted to solid color
                   borderRadius: "4px 4px 0 0",
-                  transition: `height 0.8s cubic-bezier(0.65, 0, 0.35, 1) ${i * 0.06}s, background 0.3s ease`
+                  transition: `height 0.8s cubic-bezier(0.65, 0, 0.35, 1) ${i * 0.06}s, background 0.3s ease` // Reverted transition
                 }}></div>
               ))}
             </div>
@@ -514,10 +546,10 @@ const Admin = () => {
             </div>
           </div>
           
-          <div style={{ 
-            background: themeColors.cardBackground, borderRadius: 12, padding: "25px", boxShadow: `0 8px 25px rgba(0,0,0,0.08)`, position: "relative", overflow: "hidden", border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease"
+          <div className="card-hover-effect" style={{ 
+            background: themeColors.cardBackground, borderRadius: 16, padding: "25px", boxShadow: `0 12px 35px rgba(0,0,0,0.07)`, position: "relative", overflow: "hidden", border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease"
           }}>
-            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, background: themeColors.headerGradient }}></div>
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, background: themeColors.headerGradient, animation: "shimmer 4s infinite linear", backgroundSize: "2000px 100%" }}></div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
               <div>
                 <div style={{ fontSize: 42, fontWeight: 700, color: themeColors.accentCyan, marginBottom: 5 }}>20%</div>
@@ -567,11 +599,11 @@ const Admin = () => {
         </div>
         
         <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 25, marginBottom: 35 }}>
-          <div style={{ 
-            background: themeColors.cardBackground, borderRadius: 12, padding: "25px", boxShadow: `0 8px 25px rgba(0,0,0,0.08)`, border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease"
+          <div className="card-hover-effect" style={{ 
+            background: themeColors.cardBackground, borderRadius: 16, padding: "25px", boxShadow: `0 12px 35px rgba(0,0,0,0.07)`, border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease"
           }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 25 }}>
-              <h2 style={{ margin: 0, fontSize: 20, fontWeight: 600, color: themeColors.textPrimary }}>Vehicle Performance</h2>
+              <h2 className="interactive-title-hover" style={{ margin: 0, fontSize: 20, fontWeight: 600, color: themeColors.textPrimary }}>Vehicle Performance</h2>
               <div style={{ display: "flex", gap: 20 }}>
                 {[{label: "Sedan", colorKey: "accentPurple"}, {label: "SUV", colorKey: "accentGold"}, {label: "Sports", colorKey: "accentCyan"}].map(item => (
                   <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, color: themeColors.textSecondary }}>
@@ -611,10 +643,10 @@ const Admin = () => {
                 </div>
                 </div>
                 
-          <div style={{ 
-            background: themeColors.cardBackground, borderRadius: 12, padding: "25px", boxShadow: `0 8px 25px rgba(0,0,0,0.08)`, border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease"
+          <div className="card-hover-effect" style={{ 
+            background: themeColors.cardBackground, borderRadius: 16, padding: "25px", boxShadow: `0 12px 35px rgba(0,0,0,0.07)`, border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease"
           }}>
-            <h2 style={{ margin: "0 0 25px 0", fontSize: 20, fontWeight: 600, color: themeColors.textPrimary }}>Brand Focus</h2>
+            <h2 className="interactive-title-hover" style={{ margin: "0 0 25px 0", fontSize: 20, fontWeight: 600, color: themeColors.textPrimary }}>Brand Focus</h2>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
               <div style={{ 
                 position: "relative", width: 190, height: 190, borderRadius: "50%",
@@ -622,13 +654,15 @@ const Admin = () => {
                 marginBottom: 25,
                 transform: animationsReady ? 'scale(1)' : 'scale(0.7)',
                 opacity: animationsReady ? 1 : 0,
-                transition: 'transform 1s cubic-bezier(0.65, 0, 0.35, 1) 0.3s, opacity 1s cubic-bezier(0.65, 0, 0.35, 1) 0.3s, background 0.3s ease'
+                transition: 'transform 1.2s cubic-bezier(0.65, 0, 0.35, 1) 0.3s, opacity 1s cubic-bezier(0.65, 0, 0.35, 1) 0.3s, background 0.3s ease',
               }}>
                 <div style={{ 
-                  position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+                  position: "absolute", top: "50%", left: "50%", 
+                  transform: "translate(-50%, -50%)",
                   width: 80, height: 80, borderRadius: "50%", background: themeColors.cardBackground,
                   display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column",
-                  transition: "background 0.3s ease"
+                  transition: "background 0.3s ease",
+                  boxShadow: "0 5px 15px rgba(0,0,0,0.1)"
                 }}>
                   <div style={{ fontSize: 22, fontWeight: 700, color: themeColors.textPrimary }}>180</div>
                   <div style={{ fontSize: 13, color: themeColors.textSecondary }}>Total</div>
@@ -661,25 +695,29 @@ const Admin = () => {
                 
         <div style={{ marginBottom: 35 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-            <h2 style={{ fontSize: 22, color: themeColors.textPrimary, fontWeight: 600 }}>Active Customers</h2>
+            <h2 className="interactive-title-hover" style={{ fontSize: 22, color: themeColors.textPrimary, fontWeight: 600 }}>Active Customers</h2>
             <div style={{ display: "flex", gap: 15 }}>
-              <button style={{ padding: "10px 20px", borderRadius: 8, background: themeColors.cardBackgroundLighter, border: `1px solid ${themeColors.borderColor}`, color: themeColors.textSecondary, fontSize: 14, fontWeight: 500, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, transition: "background-color 0.2s, color 0.2s, border-color 0.3s ease" }}
-                onMouseEnter={(e) => {e.currentTarget.style.backgroundColor = themeColors.accentPurple; e.currentTarget.style.color = themeColors.white;}}
-                onMouseLeave={(e) => {e.currentTarget.style.backgroundColor = themeColors.cardBackgroundLighter; e.currentTarget.style.color = themeColors.textSecondary;}}
+              <button style={{ padding: "10px 20px", borderRadius: 10, background: themeColors.cardBackgroundLighter, border: `1px solid ${themeColors.borderColor}`, color: themeColors.textSecondary, fontSize: 14, fontWeight: 500, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, transition: "background-color 0.25s ease, color 0.25s ease, border-color 0.3s ease, transform 0.15s ease, box-shadow 0.25s ease" }}
+                onMouseEnter={(e) => {e.currentTarget.style.backgroundColor = themeColors.accentPurple; e.currentTarget.style.color = themeColors.white; e.currentTarget.style.boxShadow = `0 4px 12px ${themeColors.accentPurple}30`; e.currentTarget.style.transform = 'translateY(-2px)';}}
+                onMouseLeave={(e) => {e.currentTarget.style.backgroundColor = themeColors.cardBackgroundLighter; e.currentTarget.style.color = themeColors.textSecondary; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0px)';}}
+                onMouseDown={(e) => { e.currentTarget.style.transform = 'translateY(0px) scale(0.97)'; }}
+                onMouseUp={(e) => { e.currentTarget.style.transform = 'translateY(-2px) scale(1)'; }}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="10" x2="6" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="18" y1="18" x2="6" y2="18"></line></svg>
                 Filter
               </button>
-              <button style={{ padding: "10px 20px", borderRadius: 8, background: themeColors.accentPurple, border: "none", color: themeColors.white, fontSize: 14, fontWeight: 500, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, transition: "background-color 0.2s, color 0.2s" }}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#500A7A'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = themeColors.accentPurple}
+              <button style={{ padding: "10px 20px", borderRadius: 10, background: themeColors.accentPurple, border: "none", color: themeColors.white, fontSize: 14, fontWeight: 500, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, transition: "background 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease" }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = `linear-gradient(45deg, ${themeColors.accentPurple}, #8E24AA)`; e.currentTarget.style.boxShadow = `0 6px 18px ${themeColors.accentPurple}50`; e.currentTarget.style.transform = 'translateY(-2px)';}}
+                onMouseLeave={(e) => { e.currentTarget.style.background = themeColors.accentPurple; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0px)';}}
+                onMouseDown={(e) => { e.currentTarget.style.transform = 'translateY(0px) scale(0.97)'; }}
+                onMouseUp={(e) => { e.currentTarget.style.transform = 'translateY(-2px) scale(1)'; }}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 Add Customer
               </button>
             </div>
           </div>
-          <div style={{ background: themeColors.cardBackground, borderRadius: 12, boxShadow: `0 8px 25px rgba(0,0,0,0.08)`, overflowX: "auto", border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease" }}>
+          <div className="card-hover-effect" style={{ background: themeColors.cardBackground, borderRadius: 16, boxShadow: `0 12px 35px rgba(0,0,0,0.07)`, overflowX: "auto", border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "800px" }}>
               <thead>
                 <tr style={{ background: themeColors.tableHeaderBg, borderBottom: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease" }}>
@@ -750,13 +788,15 @@ const Admin = () => {
         
         <div style={{ marginBottom: 35 }}>
            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-            <h2 style={{ fontSize: 22, color: themeColors.textPrimary, fontWeight: 600 }}>Recent Interactions</h2>
-            <button style={{ padding: "10px 20px", borderRadius: 8, background: "transparent", border: `1px solid ${themeColors.accentPurple}`, color: themeColors.accentPurple, fontSize: 14, fontWeight: 500, cursor: "pointer", transition: "background-color 0.2s, color 0.2s, border-color 0.3s ease" }}
-              onMouseEnter={(e) => {e.currentTarget.style.backgroundColor = themeColors.accentPurple; e.currentTarget.style.color = themeColors.white;}}
-              onMouseLeave={(e) => {e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = themeColors.accentPurple;}}
+            <h2 className="interactive-title-hover" style={{ fontSize: 22, color: themeColors.textPrimary, fontWeight: 600 }}>Recent Interactions</h2>
+            <button style={{ padding: "10px 20px", borderRadius: 10, background: "transparent", border: `1px solid ${themeColors.accentPurple}`, color: themeColors.accentPurple, fontSize: 14, fontWeight: 500, cursor: "pointer", transition: "background 0.25s ease, color 0.25s ease, border-color 0.3s ease, transform 0.15s ease, box-shadow 0.25s ease" }}
+              onMouseEnter={(e) => {e.currentTarget.style.backgroundColor = themeColors.accentPurple; e.currentTarget.style.color = themeColors.white; e.currentTarget.style.boxShadow = `0 4px 12px ${themeColors.accentPurple}30`; e.currentTarget.style.transform = 'translateY(-2px)';}}
+              onMouseLeave={(e) => {e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = themeColors.accentPurple; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0px)';}}
+              onMouseDown={(e) => { e.currentTarget.style.transform = 'translateY(0px) scale(0.97)'; }}
+              onMouseUp={(e) => { e.currentTarget.style.transform = 'translateY(-2px) scale(1)'; }}
             >View All</button>
           </div>
-          <div style={{ background: themeColors.cardBackground, borderRadius: 12, boxShadow: `0 8px 25px rgba(0,0,0,0.08)`, overflow: "hidden", border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease" }}>
+          <div className="card-hover-effect" style={{ background: themeColors.cardBackground, borderRadius: 16, boxShadow: `0 12px 35px rgba(0,0,0,0.07)`, overflow: "hidden", border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease" }}>
             {[
               { initials: "JD", name: "John Doe", time: "Today, 2:30 PM", message: "Interested in Mercedes A-Class but concerned about price point. Looking for premium features but within a lower budget.", tag: "Potential for GAC alternative", tagColorKey: "accentPurple" },
               { initials: "SS", name: "Sarah Smith", time: "Yesterday, 11:15 AM", message: "Looking for SUV with good fuel economy. Discussed Mercedes GLA but was also interested in more environmentally friendly options.", tag: "High interest - Test drive", tagColorKey: "accentGold" }
@@ -777,13 +817,13 @@ const Admin = () => {
             </div>
             
         <div>
-          <h2 style={{ fontSize: 22, color: themeColors.textPrimary, marginBottom: 20, fontWeight: 600 }}>CVM Insights</h2>
+          <h2 className="interactive-title-hover" style={{ fontSize: 22, color: themeColors.textPrimary, marginBottom: 20, fontWeight: 600 }}>CVM Insights</h2>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: 25 }}>
             {[
               { title: "Top Customer Objections", iconName: "chat", colorKey: "accentPurple", items: [{label: "Price range higher than expected", value: "42%"}, {label: "Financing terms too restrictive", value: "28%"}, {label: "Preferred color not available", value: "15%"}] },
               { title: "Cross-Sell Opportunities", iconName: "crossSell", colorKey: "accentGold", items: [{label: "Customers interested in service packages", value: "18"}, {label: "Potential leads for GAC from Mercedes inquiries", value: "12"}, {label: "Customers asked about leasing options", value: "8"}] }
             ].map(insight => (
-              <div key={insight.title} style={{ background: themeColors.cardBackground, padding: 25, borderRadius: 12, boxShadow: `0 8px 25px rgba(0,0,0,0.08)`, border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease" }}>
+              <div key={insight.title} className="card-hover-effect" style={{ background: themeColors.cardBackground, padding: 25, borderRadius: 16, boxShadow: `0 12px 35px rgba(0,0,0,0.07)`, border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease" }}>
                 <h3 style={{ fontSize: 18, color: themeColors[insight.colorKey as keyof typeof themeColors], marginBottom: 20, fontWeight: 600, display: "flex", alignItems: "center", gap: 10, transition: "color 0.3s ease" }}>
                   {insight.iconName === "chat" ? 
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={themeColors[insight.colorKey as keyof typeof themeColors]} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> :
