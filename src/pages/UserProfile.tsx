@@ -25,6 +25,11 @@ const UserProfile = () => {
   // Add a state to track the email creation step
   const [emailStep, setEmailStep] = useState(1); // 1: Select Purpose, 2: Edit Email
   
+  // Add state for budget-friendly suggestions
+  const [budgetSuggestions, setBudgetSuggestions] = useState<any[]>([]);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
+  const [suggestionError, setSuggestionError] = useState<string | null>(null);
+  
   // Helper functions for styling
   const getInteractionTypeColor = (type: string) => {
     switch(type) {
@@ -394,6 +399,112 @@ Return your response in the following JSON format:
 
     generateSummary();
   }, [id]); // Only depend on id
+
+  // Add a function to fetch budget-friendly suggestions
+  const fetchBudgetSuggestions = async () => {
+    setIsLoadingSuggestions(true);
+    setSuggestionError(null);
+    
+    try {
+      // 1. Fetch the cars data
+      const response = await fetch('/src/cars.json');
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch cars data');
+      }
+      
+      const carsData = await response.json();
+      
+      // 2. Fetch the conversation data
+      let conversationText = "";
+      try {
+        const convResponse = await fetch('/src/AM001-no.txt');
+        if (convResponse.ok) {
+          conversationText = await convResponse.text();
+        }
+      } catch (fetchError) {
+        console.warn("Failed to fetch conversation data:", fetchError);
+      }
+      
+      // 3. Call OpenAI API for personalized budget-friendly suggestions
+      const apiKey = "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";
+      
+      const apiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            { 
+              role: "system", 
+              content: "You are a vehicle recommendation assistant for Gargash Motors. Your task is to recommend the top 3 budget-friendly vehicles from the available inventory that best match the customer's preferences and needs." 
+            },
+            { 
+              role: "user", 
+              content: `Based on this customer's profile, interests, and conversation history, recommend the top 3 most budget-friendly vehicles from our inventory that would suit their needs.
+
+CUSTOMER PROFILE:
+Name: ${userData.name}
+Preferences: ${JSON.stringify(userData.carPreferences)}
+Recent Interactions: ${JSON.stringify(userData.interactionHistory)}
+Purchase History: ${JSON.stringify(userData.purchaseHistory)}
+
+CONVERSATION HISTORY:
+${conversationText}
+
+AVAILABLE CARS:
+${JSON.stringify(carsData)}
+
+Please analyze the cars data and select the 3 most budget-friendly options that would still meet the customer's preferences. Return your response in the following JSON format:
+{
+  "suggestions": [
+    {
+      "img": "image_url",
+      "title": "car_brand",
+      "variant": "car_model",
+      "price": "price",
+      "reason": "A brief explanation of why this is a good budget-friendly option for this customer"
+    },
+    {...},
+    {...}
+  ]
+}` 
+            }
+          ],
+          temperature: 0.7,
+          response_format: { type: "json_object" }
+        })
+      });
+
+      if (!apiResponse.ok) {
+        throw new Error(`OpenAI API error: ${apiResponse.status}`);
+      }
+
+      const data = await apiResponse.json();
+      
+      // Parse the JSON response from the content field
+      const result = JSON.parse(data.choices[0].message.content);
+      
+      // Update state with suggestions
+      setBudgetSuggestions(result.suggestions);
+      
+    } catch (err: any) {
+      console.error('Error generating budget suggestions:', err);
+      setSuggestionError(`${err.message || 'Failed to generate budget suggestions'}`);
+    } finally {
+      setIsLoadingSuggestions(false);
+    }
+  };
+
+  // Call the suggestions function when component mounts
+  useEffect(() => {
+    if (id === 'AM001') {
+      fetchBudgetSuggestions();
+    }
+  }, [id]);
 
   return (
     <div style={{ 
@@ -1665,6 +1776,225 @@ Return your response in the following JSON format:
             </div>
           ))}
         </div>
+      </div>
+      
+      {/* Add Budget-Friendly Suggestions section before the bottom action bar */}
+      <div style={{ 
+        background: "linear-gradient(to right, #ffffff, #fff6e5)",
+        borderRadius: "16px", 
+        padding: "35px", 
+        marginTop: "40px",
+        boxShadow: "0 15px 35px rgba(0,0,0,0.08)",
+        border: "1px solid rgba(255, 153, 0, 0.1)",
+        position: "relative",
+        overflow: "hidden"
+      }}>
+        <div style={{
+          position: "absolute",
+          top: "0",
+          right: "0",
+          width: "200px",
+          height: "200px",
+          background: "radial-gradient(circle, rgba(255, 153, 0, 0.07) 0%, rgba(255, 153, 0, 0) 70%)",
+          borderRadius: "50%",
+          transform: "translate(30%, -30%)"
+        }}></div>
+        
+        <h2 style={{ 
+          color: "#ff9900", 
+          fontSize: "24px", 
+          marginTop: "0", 
+          marginBottom: "25px", 
+          display: "flex", 
+          alignItems: "center", 
+          fontWeight: "700" 
+        }}>
+          <div style={{
+            width: "45px",
+            height: "45px",
+            backgroundColor: "rgba(255, 153, 0, 0.1)",
+            borderRadius: "12px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginRight: "15px",
+            boxShadow: "0 4px 10px rgba(255, 153, 0, 0.15)"
+          }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff9900" strokeWidth="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+          </div>
+          Personalized Budget-Friendly Suggestions
+          {isLoadingSuggestions && (
+            <div style={{ 
+              marginLeft: "15px", 
+              fontSize: "14px", 
+              color: "#666",
+              display: "flex",
+              alignItems: "center"
+            }}>
+              <div style={{ 
+                width: "18px", 
+                height: "18px", 
+                borderRadius: "50%", 
+                border: "2px solid rgba(255, 153, 0, 0.1)", 
+                borderTopColor: "#ff9900",
+                animation: "spin 1s linear infinite",
+                marginRight: "8px"
+              }} />
+              Finding options...
+            </div>
+          )}
+        </h2>
+        
+        <p style={{ 
+          fontSize: "16px", 
+          color: "#666", 
+          marginBottom: "30px",
+          maxWidth: "90%",
+          lineHeight: "1.6"
+        }}>
+          Based on your preferences and conversation history, we've identified these budget-friendly options from our collection that might interest you:
+        </p>
+        
+        {suggestionError ? (
+          <div style={{ 
+            padding: "20px", 
+            backgroundColor: "#fff4e5", 
+            color: "#e67e22", 
+            borderRadius: "12px", 
+            marginBottom: "20px",
+            display: "flex",
+            alignItems: "center",
+            gap: "12px"
+          }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            {suggestionError}
+          </div>
+        ) : isLoadingSuggestions ? (
+          <div style={{ 
+            display: "flex", 
+            justifyContent: "center", 
+            padding: "40px 0" 
+          }}>
+            <div style={{ 
+              width: "40px", 
+              height: "40px", 
+              borderRadius: "50%", 
+              border: "3px solid rgba(255, 153, 0, 0.1)", 
+              borderTopColor: "#ff9900",
+              animation: "spin 1s linear infinite" 
+            }} />
+          </div>
+        ) : (
+          <div style={{ 
+            display: "grid", 
+            gridTemplateColumns: "repeat(3, 1fr)", 
+            gap: "25px",
+            marginTop: "20px"
+          }}>
+            {budgetSuggestions.map((car, index) => (
+              <div key={index} style={{ 
+                background: "white", 
+                borderRadius: "16px", 
+                overflow: "hidden",
+                boxShadow: "0 10px 25px rgba(0,0,0,0.06)",
+                border: "1px solid #eee",
+                transition: "transform 0.3s ease, box-shadow 0.3s ease",
+              }}>
+                <div style={{
+                  height: "200px",
+                  overflow: "hidden",
+                  position: "relative"
+                }}>
+                  <img 
+                    src={car.img} 
+                    alt={`${car.title} ${car.variant}`}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      transition: "transform 0.5s ease"
+                    }}
+                  />
+                  <div style={{
+                    position: "absolute",
+                    bottom: "0",
+                    left: "0",
+                    width: "100%",
+                    background: "linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0))",
+                    padding: "20px 15px 15px"
+                  }}>
+                    <div style={{ 
+                      color: "white", 
+                      fontSize: "18px", 
+                      fontWeight: "600",
+                      textShadow: "0 1px 3px rgba(0,0,0,0.3)"
+                    }}>
+                      {car.title}
+                    </div>
+                    <div style={{ 
+                      color: "rgba(255,255,255,0.9)", 
+                      fontSize: "14px",
+                      marginTop: "3px",
+                      textShadow: "0 1px 2px rgba(0,0,0,0.3)"
+                    }}>
+                      {car.variant}
+                    </div>
+                  </div>
+                </div>
+                
+                <div style={{ padding: "20px" }}>
+                  <div style={{ 
+                    fontSize: "22px", 
+                    fontWeight: "bold", 
+                    color: "#ff9900",
+                    marginBottom: "12px"
+                  }}>
+                    {car.price}
+                  </div>
+                  
+                  <div style={{
+                    fontSize: "14px",
+                    color: "#666",
+                    lineHeight: "1.6",
+                    borderTop: "1px solid #f0f0f0",
+                    paddingTop: "15px"
+                  }}>
+                    <strong style={{ color: "#444", display: "block", marginBottom: "5px" }}>Why it's a good match:</strong>
+                    {car.reason}
+                  </div>
+                  
+                  <button style={{
+                    width: "100%",
+                    background: "#ff9900",
+                    color: "white",
+                    border: "none",
+                    padding: "12px",
+                    borderRadius: "8px",
+                    marginTop: "20px",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: "8px" }}>
+                      <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+                    </svg>
+                    Request More Info
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       
       {/* Enhanced Back Button and Action Bar */}

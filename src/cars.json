@@ -276,6 +276,73 @@
       "year": "2025",
       "interior": "Nappa Leather Black with Diamond Stitching",
       "galleryImages": ["https://via.placeholder.com/1280x720.png?text=AMG+SL+Roadster+Gallery+1"]
+    },
+    {
+      "img": "https://images.netdirector.co.uk/gforces-auto/image/upload/w_1680,h_764,q_auto,c_fill,f_auto,fl_lossy/auto-client/844905fa29306532527b6f0aca56f24f/car_vehicle_color1_lagoon_blue_150x.png",
+      "title": "GAC Motors",
+      "link": "#",
+      "variant": "GS3 EMZOOM",
+      "paint": "Lagoon Blue",
+      "pricePerMonth": "1,295 / month Finance",
+      "price": "AED 89,900",
+      "availability": "Available",
+      "year": "2025",
+      "interior": "Leather Black with Silver Accents",
+      "description": "Gen Stylish GS3 EMZOOM - Trendy, Futuristic, Sporty yet Spacious. An Economy SUV for your everyday adventure"
+    },
+    {
+      "img": "https://images.netdirector.co.uk/gforces-auto/image/upload/w_1920,h_1080,q_auto,c_fill,f_auto,fl_lossy/auto-client/66b3a183bb94b9f5f6f16eb09352987f/pr_image6.jpg",
+      "title": "GAC Motors",
+      "link": "#",
+      "variant": "EMPOW",
+      "paint": "Racing Red",
+      "pricePerMonth": "1,850 / month Finance",
+      "price": "AED 129,900",
+      "availability": "Available",
+      "year": "2025",
+      "interior": "Premium Sports Leather with Red Stitching",
+      "description": "The Ultimate Sport Sedan. Experience Performance Like No Other."
+    },
+    {
+      "img": "https://images.netdirector.co.uk/gforces-auto/image/upload/q_auto,c_crop,f_auto,fl_lossy,x_0,y_620,w_1318,h_740/w_1920,h_1080,c_fill/auto-client/d513843085d495f98b20bfd29e2f61b3/cover.png",
+      "title": "GAC Motors",
+      "link": "#",
+      "variant": "GS8",
+      "paint": "Elegant White",
+      "pricePerMonth": "2,350 / month Finance",
+      "price": "AED 164,900",
+      "availability": "Available",
+      "year": "2025",
+      "interior": "Premium Nappa Leather Beige",
+      "description": "Hybrid & Petrol Editions Available."
+    },
+    {
+      "img": "https://www.alfaromeo-uae.com/content/dam/alfa/ae/giuila/spotlight_1920x888.jpg",
+      "title": "ALFA ROMEO",
+      "link": "#",
+      "variant": "STELVIO QUADRIFOGLIO",
+      "paint": "Rosso Alfa",
+      "pricePerMonth": "6,800 / month Finance",
+      "price": "AED 479,000",
+      "availability": "Available",
+      "year": "2025",
+      "interior": "Premium Leather with Carbon Fiber Accents",
+      "description": "The power of confidence. The Stelvio Quadrifoglio combines high-performance engineering with Italian design, featuring a 2.9L V6 Bi-Turbo engine delivering 510 hp for an uncompromising driving experience."
+    },
+    {
+      "img": "https://www.alfaromeo-uae.com/content/dam/alfa/cross/tonale-mp/canvas/mobile.jpg/jcr:content/renditions/desktop.jpg",
+      "title": "ALFA ROMEO",
+      "link": "#",
+      "variant": "TONALE",
+      "paint": "Misano Blue",
+      "pricePerMonth": "3,200 / month Finance",
+      "price": "AED 225,000",
+      "availability": "Available",
+      "year": "2025",
+      "interior": "Premium Alcantara with Red Stitching",
+      "description": "The beginning of a new Alfa Romeo era. The Tonale represents Alfa Romeo's entry into electrification with its advanced hybrid powertrain, combining efficiency with the brand's signature driving dynamics and Italian craftsmanship."
     }
   ]
+  
+
   
