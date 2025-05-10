@@ -4,6 +4,8 @@ import "./index.css";
 import Layout from "./components/Layout";
 import HomePage from "./pages/HomePage";
 import CarDetails from "./pages/CarDetails";
+import Admin from "./Admin";
+import UserProfile from "./pages/UserProfile";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {
@@ -12,11 +14,19 @@ if (!rootElement) {
 
 createRoot(rootElement).render(
   <BrowserRouter>
-    <Layout>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/car/:id" element={<CarDetails />} />
-      </Routes>
-    </Layout>
+    <Routes>
+      <Route path="/admin" element={<Admin />} />
+      <Route path="/user/:id" element={<UserProfile />} />
+      <Route path="/" element={
+        <Layout>
+          <HomePage />
+        </Layout>
+      } />
+      <Route path="/car/:id" element={
+        <Layout>
+          <CarDetails />
+        </Layout>
+      } />
+    </Routes>
   </BrowserRouter>
 );
