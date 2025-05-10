@@ -1,23 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import gargashLogo from './gragsh-logo.png';
 import sixtLogo from './sixt logo.png';
 import gacLogo from './Gac motors.png';
 import alfaRomeoLogo from './alfa Romero.png';
-import UserProfile from "./pages/UserProfile";
 
 const Admin = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [animationsReady, setAnimationsReady] = useState(false);
+  const navigate = useNavigate();
 
-  // Placeholder stats for the dashboard
+  useEffect(() => {
+    if (loggedIn) {
+      const timer = setTimeout(() => {
+        setAnimationsReady(true);
+      }, 200);
+      return () => clearTimeout(timer);
+    } else {
+      setAnimationsReady(false);
+    }
+  }, [loggedIn]);
+
+  const lightThemeColors = {
+    background: "#F0F2F5", 
+    cardBackground: "#FFFFFF", 
+    cardBackgroundLighter: "#F9F9F9", 
+    textPrimary: "#1A1A1A", 
+    textSecondary: "#555555", 
+    accentPurple: "#6A1B9A", 
+    accentGold: "#FFA000", 
+    accentCyan: "#00796B", 
+    positive: "#1E8E3E", 
+    negative: "#D32F2F", 
+    inputBackground: "#E9ECEF", 
+    borderColor: "#DDE2E5", 
+    white: "#FFFFFF",
+    black: "#000000",
+    headerGradient: "linear-gradient(90deg, #6A1B9A 0%, #00796B 100%)", 
+    logoFilter: 'none', 
+    statIconColor: "#1A1A1A",
+    tableHeaderBg: "#F5F5F5",
+  };
+
+  const themeColors = lightThemeColors;
+
   const stats = [
     { label: "Cars Sold", value: 24 },
     { label: "Total Leads", value: 120 },
     { label: "Conversion Rate", value: "20%" },
   ];
 
-  // Brand logos for the footer
   const brands = [
     { name: "Mercedes-Benz", logo: "https://ext.same-assets.com/1815046438/2150039358.svg" },
     { name: "Alfa Romeo", logo: alfaRomeoLogo },
@@ -29,41 +63,123 @@ const Admin = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // No real authentication, just a demo
     setLoggedIn(true);
   };
 
   if (!loggedIn) {
+    // Mercedes-Benz SVG Icon (simplified for animation)
+    const MercedesLogo = ({ style }: { style: React.CSSProperties }) => (
+      <svg style={style} viewBox="0 0 100 100" fill="rgba(0, 0, 0, 0.05)" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 0C22.386 0 0 22.386 0 50s22.386 50 50 50 50-22.386 50-50S77.614 0 50 0zm0 90C27.944 90 10 72.056 10 50S27.944 10 50 10s40 17.944 40 40-17.944 40-40 40z"/>
+        <path d="M50 15l25.98 45H24.02L50 15zm0 9l-15.588 27h31.176L50 24zM50 67.5c-9.665 0-17.5-7.835-17.5-17.5S40.335 32.5 50 32.5s17.5 7.835 17.5 17.5S59.665 67.5 50 67.5zm0-25c-4.142 0-7.5 3.358-7.5 7.5s3.358 7.5 7.5 7.5 7.5-3.358 7.5-7.5-3.358-7.5-7.5-7.5z"/>
+      </svg>
+    );
+
+    const numLogos = 15; // Number of logos for the background animation
+
     return (
+      <>
+        <style>
+          {`
+            @keyframes moveLogos {
+              0% {
+                transform: translate(var(--start-x), var(--start-y)) scale(var(--scale));
+                opacity: 0;
+              }
+              20% {
+                opacity: var(--max-opacity);
+              }
+              80% {
+                opacity: var(--max-opacity);
+              }
+              100% {
+                transform: translate(var(--end-x), var(--end-y)) scale(var(--scale));
+                opacity: 0;
+              }
+            }
+            @keyframes shimmer {
+              0% { background-position: -1000px 0; }
+              100% { background-position: 1000px 0; }
+            }
+            .card-hover-effect {
+              transition: transform 0.5s cubic-bezier(0.15, 0.9, 0.3, 1), box-shadow 0.5s cubic-bezier(0.15, 0.9, 0.3, 1);
+              transform-style: preserve-3d;
+            }
+            .card-hover-effect:hover {
+              transform: translateY(-12px) rotateX(10deg) rotateY(-5deg) scale(1.04);
+              box-shadow: 0 28px 65px rgba(0,0,0,0.15), 0 0 15px rgba(106, 27, 154, 0.2); /* Added a subtle accent glow */
+            }
+            .interactive-title-hover {
+              transition: color 0.3s ease, text-shadow 0.4s ease;
+            }
+            .interactive-title-hover:hover {
+              text-shadow: 0 0 8px rgba(0,0,0,0.15);
+            }
+          `}
+        </style>
       <div style={{ 
         minHeight: "100vh", 
         display: "flex", 
         flexDirection: "column",
         alignItems: "center", 
         justifyContent: "center", 
-        background: "linear-gradient(135deg, #372163 0%, #4a2b8a 100%)",
-        padding: "20px"
-      }}>
-        {/* Logo header */}
-        <div style={{ marginBottom: 40 }}>
-          <img 
-            src={gargashLogo}
-            alt="Gargash Logo" 
-            style={{ height: 80 }}
-          />
+          background: "linear-gradient(135deg, #FFFFFF 0%, #F0F2F5 100%)",
+          padding: "20px",
+          fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
+          position: "relative", // Needed for absolute positioning of logos
+          overflow: "hidden" // Hide parts of logos that move outside
+        }}>
+          {/* Animated Background Logos */}
+          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
+            {Array.from({ length: numLogos }).map((_, i) => {
+              const size = Math.random() * 70 + 30; // Slightly smaller max size
+              const startX = Math.random() * 100 + 'vw';
+              const startY = Math.random() * 100 + 'vh';
+              const endX = (Math.random() * 100 - 50) + 'vw'; 
+              const endY = (Math.random() * 100 - 50) + 'vh';
+              const duration = Math.random() * 25 + 20; // Slightly longer duration
+              const delay = Math.random() * 20; // Slightly longer delay
+              const scale = Math.random() * 0.4 + 0.4; // Slightly smaller scale
+              const maxOpacity = Math.random() * 0.02 + 0.01; // More subtle opacity
+
+              return (
+                <MercedesLogo
+                  key={i}
+                  style={{
+                    position: 'absolute',
+                    width: size,
+                    height: size,
+                    top: 0, // Initial top/left will be controlled by transform
+                    left: 0,
+                    opacity: 0,
+                    animation: `moveLogos ${duration}s linear ${delay}s infinite`,
+                    // CSS Custom Properties for animation
+                    ['--start-x']: startX,
+                    ['--start-y']: startY,
+                    ['--end-x']: endX,
+                    ['--end-y']: endY,
+                    ['--scale']: scale,
+                    ['--max-opacity']: maxOpacity,
+                  } as React.CSSProperties}
+                />
+              );
+            })}
         </div>
         
         <form 
           onSubmit={handleLogin} 
           style={{ 
-            background: "rgba(255,255,255,0.95)", 
-            padding: 40, 
-            borderRadius: 12, 
-            boxShadow: "0 10px 30px rgba(0,0,0,0.2)", 
-            minWidth: 380,
-            maxWidth: 450,
-            position: "relative",
-            overflow: "hidden"
+              background: themeColors.cardBackground,
+              padding: "40px 35px", // Increased horizontal padding
+              borderRadius: 20, // Increased border radius
+              boxShadow: `0 15px 35px rgba(0,0,0,0.08)`, // Softer shadow
+              width: "100%",
+              maxWidth: 420, // Slightly wider
+              position: "relative", 
+              zIndex: 1, 
+              overflow: "hidden",
+              border: `1px solid ${themeColors.borderColor}`,
+              transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease"
           }}
         >
           <div style={{
@@ -71,31 +187,33 @@ const Admin = () => {
             top: 0,
             left: 0,
             right: 0,
-            height: 6,
-            background: "linear-gradient(90deg, #372163 0%, #b8a039 100%)"
+            height: 5,
+            background: themeColors.headerGradient,
+            animation: "shimmer 4s infinite linear", // Added shimmer animation
+            backgroundSize: "2000px 100%" // For shimmer effect
           }}></div>
           
           <h2 style={{ 
             textAlign: "center", 
-            marginBottom: 30, 
-            color: "#372163", 
-            fontSize: 28,
+              marginBottom: 20,
+              color: themeColors.textPrimary,
+              fontSize: 26,
             fontWeight: 600
           }}>
-            Admin Portal
+              Admin Portal Access
           </h2>
           
           <p style={{ 
             textAlign: "center", 
-            marginBottom: 30, 
-            color: "#666", 
+              marginBottom: 35,
+              color: themeColors.textSecondary,
             fontSize: 15 
           }}>
-            Sign in to access the customer value management dashboard
+              Securely sign in to manage the CVM dashboard.
           </p>
           
-          <div style={{ marginBottom: 20 }}>
-            <label style={{ display: "block", marginBottom: 8, color: "#333", fontSize: 14, fontWeight: 500 }}>
+            <div style={{ marginBottom: 25 }}>
+              <label style={{ display: "block", marginBottom: 10, color: themeColors.textSecondary, fontSize: 14, fontWeight: 500 }}>
               Username
             </label>
             <input
@@ -105,20 +223,24 @@ const Admin = () => {
               onChange={e => setUsername(e.target.value)}
               style={{ 
                 width: "100%", 
-                padding: "12px 16px", 
-                borderRadius: 8, 
-                border: "1px solid #ddd",
-                fontSize: 15,
+                  padding: "15px 20px", // Adjusted padding
+                  borderRadius: 12, // Increased border radius
+                  border: `1px solid ${themeColors.borderColor}`,
+                  background: themeColors.inputBackground,
+                  color: themeColors.textPrimary,
+                  fontSize: 16,
                 outline: "none",
-                transition: "border 0.2s",
+                  transition: "border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease",
                 boxSizing: "border-box"
               }}
+                onFocus={(e) => { e.target.style.borderColor = themeColors.accentPurple; e.target.style.boxShadow = `0 0 0 3px ${themeColors.accentPurple}40`; }}
+                onBlur={(e) => { e.target.style.borderColor = themeColors.borderColor; e.target.style.boxShadow = 'none'; }}
               required
             />
           </div>
           
-          <div style={{ marginBottom: 30 }}>
-            <label style={{ display: "block", marginBottom: 8, color: "#333", fontSize: 14, fontWeight: 500 }}>
+            <div style={{ marginBottom: 35 }}>
+              <label style={{ display: "block", marginBottom: 10, color: themeColors.textSecondary, fontSize: 14, fontWeight: 500 }}>
               Password
             </label>
             <input
@@ -128,14 +250,18 @@ const Admin = () => {
               onChange={e => setPassword(e.target.value)}
               style={{ 
                 width: "100%", 
-                padding: "12px 16px", 
-                borderRadius: 8, 
-                border: "1px solid #ddd",
-                fontSize: 15,
+                  padding: "15px 20px", // Adjusted padding
+                  borderRadius: 12, // Increased border radius
+                  border: `1px solid ${themeColors.borderColor}`,
+                  background: themeColors.inputBackground,
+                  color: themeColors.textPrimary,
+                  fontSize: 16,
                 outline: "none",
-                transition: "border 0.2s",
+                  transition: "border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease",
                 boxSizing: "border-box"
               }}
+                onFocus={(e) => { e.target.style.borderColor = themeColors.accentPurple; e.target.style.boxShadow = `0 0 0 3px ${themeColors.accentPurple}40`; }}
+                onBlur={(e) => { e.target.style.borderColor = themeColors.borderColor; e.target.style.boxShadow = 'none'; }}
               required
             />
           </div>
@@ -144,137 +270,147 @@ const Admin = () => {
             type="submit"
             style={{ 
               width: "100%", 
-              padding: "14px 10px", 
-              borderRadius: 8, 
-              background: "#372163", 
-              color: "#fff", 
+              padding: "18px 10px", // Increased padding
+              borderRadius: 12, // Increased border radius
+              background: themeColors.accentPurple,
+              color: themeColors.white,
               border: "none", 
               fontWeight: 600, 
-              fontSize: 16, 
+              fontSize: 17,
               cursor: "pointer",
-              transition: "background 0.2s ease",
-              boxShadow: "0 4px 10px rgba(55, 33, 99, 0.3)"
+              transition: "background 0.4s ease, transform 0.2s ease, box-shadow 0.4s ease", // Refined transition
+              boxShadow: `0 7px 20px ${themeColors.accentPurple}50` // Softer, slightly larger shadow
             }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = `linear-gradient(45deg, ${themeColors.accentPurple}, #A142D8)`; // Brighter gradient on hover
+                e.currentTarget.style.boxShadow = `0 10px 30px ${themeColors.accentPurple}70`; // Enhanced shadow on hover
+                e.currentTarget.style.transform = 'scale(1.02)'; // Slight scale up on hover
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = themeColors.accentPurple;
+                e.currentTarget.style.boxShadow = `0 7px 20px ${themeColors.accentPurple}50`;
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+              onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.96)'} // Slightly more pronounced press
+              onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1.02)'} // Return to hover scale
           >
-            Login
+              Secure Login
           </button>
         </form>
         
-        {/* Brands Section */}
-        <div style={{ marginTop: 60, textAlign: "center" }}>
-          <h3 style={{ color: "#fff", marginBottom: 20, fontWeight: 400, fontSize: 16 }}>
-            Proud Distributor of Premium Brands
+          <div style={{ marginTop: 70, textAlign: "center" }}>
+            <h3 style={{ color: themeColors.textSecondary, marginBottom: 25, fontWeight: 400, fontSize: 15 }}>
+              Authorized Distributor for Leading Automotive Brands
           </h3>
           <div style={{ 
             display: "flex", 
             justifyContent: "center", 
             alignItems: "center", 
             flexWrap: "wrap", 
-            gap: 30,
-            maxWidth: 800
-          }}>
-            {/* Mercedes */}
-            <div style={{ background: "#fff", padding: "10px 15px", borderRadius: 8, width: 130, height: 70, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <img src="https://ext.same-assets.com/1815046438/2150039358.svg" alt="Mercedes-Benz" style={{ height: 45 }} />
+              gap: "20px 25px",
+              maxWidth: 700
+            }}>
+              {brands.slice(0, 5).map(brand => (
+                <div key={brand.name} style={{ 
+                  background: themeColors.cardBackgroundLighter, 
+                  padding: "12px 18px", 
+                  borderRadius: 10, 
+                  width: 120, height: 65, 
+                  display: "flex", 
+                  alignItems: "center", 
+                  justifyContent: "center",
+                  border: `1px solid ${themeColors.borderColor}`,
+                  transition: "transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, border-color 0.3s ease",
+                }}
+                onMouseEnter={(e) => {e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = `0 6px 12px rgba(0,0,0,0.1)`}}
+                onMouseLeave={(e) => {e.currentTarget.style.transform = 'translateY(0px)'; e.currentTarget.style.boxShadow = 'none'}}
+                >
+                  <img src={brand.logo} alt={brand.name} style={{ maxHeight: brand.name === "Sixt Rent a Car" ? 25 : 40, filter: 'none' }} />
+            </div>
+              ))}
+            </div>
             </div>
             
-            {/* Alfa Romeo */}
-            <div style={{ background: "#fff", padding: "10px 15px", borderRadius: 8, width: 130, height: 70, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <img src={alfaRomeoLogo} alt="Alfa Romeo" style={{ height: 45 }} />
+          <div style={{ marginTop: 50, color: themeColors.textSecondary, fontSize: 13, textAlign: "center" }}>
+            © Gargash Enterprises LLC {new Date().getFullYear()}. All rights reserved. Secure Access Portal.
             </div>
-            
-            {/* GAC */}
-            <div style={{ background: "#fff", padding: "10px 15px", borderRadius: 8, width: 130, height: 70, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <img src={gacLogo} alt="GAC Motor" style={{ height: 35 }} />
             </div>
-            
-            {/* Sixt */}
-            <div style={{ background: "#fff", padding: "10px 15px", borderRadius: 8, width: 130, height: 70, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <img src={sixtLogo} alt="Sixt" style={{ height: 25 }} />
-            </div>
-            
-            {/* Purple */}
-            <div style={{ background: "#fff", padding: "10px 15px", borderRadius: 8, width: 130, height: 70, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <img src="https://i.ibb.co/nzNJ9wd/purple-by-gargash.png" alt="Purple" style={{ height: 45 }} />
-            </div>
-          </div>
-        </div>
-        
-        {/* Footer */}
-        <div style={{ marginTop: 40, color: "rgba(255,255,255,0.7)", fontSize: 13, textAlign: "center" }}>
-          © Gargash Enterprises LLC {new Date().getFullYear()}. All rights reserved.
-        </div>
-      </div>
+      </>
     );
   }
 
-  // Admin dashboard after login
   return (
-    <div style={{ minHeight: "100vh", background: "#f0f2f5", padding: "0" }}>
-      {/* Header */}
+    <div style={{ minHeight: "100vh", background: themeColors.background, color: themeColors.textPrimary, padding: "0", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif", transition: "background 0.3s ease, color 0.3s ease" }}>
       <header style={{ 
-        background: "#372163", 
-        padding: "16px 24px",
-        boxShadow: "0 4px 15px rgba(0,0,0,0.15)",
+        background: themeColors.cardBackground,
+        padding: "15px 30px",
+        boxShadow: `0 6px 25px rgba(0,0,0,0.07)`, // Slightly refined shadow
         position: "sticky",
         top: 0,
-        zIndex: 100
+        zIndex: 1000,
+        borderBottom: `1px solid ${themeColors.borderColor}`,
+        transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease"
       }}>
         <div style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          maxWidth: 1200,
+          maxWidth: 1400,
           margin: "0 auto"
         }}>
           <div style={{ display: "flex", alignItems: "center" }}>
             <img 
               src={gargashLogo} 
               alt="Gargash" 
-              style={{ height: 40 }}
+              style={{ height: 38, filter: 'none' }}
             />
             <span style={{ 
-              marginLeft: 20, 
-              color: "#fff", 
-              fontSize: 18, 
+              marginLeft: 25,
+              color: themeColors.textPrimary,
+              fontSize: 20,
               fontWeight: 500,
-              borderLeft: "1px solid rgba(255,255,255,0.3)",
-              paddingLeft: 20
+              borderLeft: `1px solid ${themeColors.borderColor}`,
+              paddingLeft: 25,
+              transition: "color 0.3s ease, border-color 0.3s ease"
             }}>
-              Admin Dashboard
+              CVM Dashboard
             </span>
           </div>
           
-          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
             <div style={{ 
               display: "flex", 
               alignItems: "center", 
               gap: 8, 
-              color: "rgba(255,255,255,0.8)",
+              color: themeColors.textSecondary,
               fontSize: 14
             }}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <polyline points="12 6 12 12 16 14"></polyline>
               </svg>
               Last updated: Today, 10:45 AM
             </div>
             <button 
-              onClick={() => setLoggedIn(false)}
+              onClick={() => { setLoggedIn(false); setAnimationsReady(false); }}
               style={{ 
-                padding: "8px 16px", 
-                background: "rgba(255,255,255,0.15)", 
-                border: "1px solid rgba(255,255,255,0.3)", 
-                borderRadius: 6, 
+                padding: "10px 18px",
+                background: "transparent",
+                border: `1px solid ${themeColors.accentPurple}`,
+                borderRadius: 8,
                 cursor: "pointer",
-                color: "#fff",
+                color: themeColors.accentPurple,
                 fontSize: 14,
+                fontWeight: 500,
                 display: "flex",
                 alignItems: "center",
-                gap: 8
+                gap: 8,
+                transition: "background-color 0.2s ease, color 0.2s ease, border-color 0.3s ease"
               }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = themeColors.accentPurple; e.currentTarget.style.color = themeColors.white;}}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = themeColors.accentPurple;}}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                 <polyline points="16 17 21 12 16 7"></polyline>
                 <line x1="21" y1="12" x2="9" y2="12"></line>
@@ -286,34 +422,36 @@ const Admin = () => {
       </header>
       
       <div style={{ 
-        maxWidth: 1200, 
-        margin: "24px auto", 
-        padding: "0 24px"
+        maxWidth: 1600,
+        margin: "30px auto",
+        padding: "0 20px",
+        perspective: "1500px" // Added for 3D transformations of child elements
       }}>
         <h1 style={{ 
-          fontSize: 28, 
-          color: "#333", 
-          marginBottom: 24, 
-          fontWeight: 600 
+          fontSize: 32,
+          color: themeColors.textPrimary,
+          marginBottom: 30,
+          fontWeight: 700,
+          letterSpacing: "-0.5px" // Added for tighter, modern look
         }}>
-          <span style={{ color: "#372163" }}>CVM</span> Dashboard
+          <span style={{ color: themeColors.accentPurple }}>CVM</span> Dashboard Overview
         </h1>
         
-        {/* Enhanced Stats Section with mini charts */}
         <div style={{ 
           display: "grid", 
-          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", 
-          gap: 24,
-          marginBottom: 30
+          gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
+          gap: 25,
+          marginBottom: 35
         }}>
-          {/* Cars Sold Card */}
-          <div style={{ 
-            background: "#fff", 
-            borderRadius: 12, 
-            padding: 24, 
-            boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
+          <div className="card-hover-effect" style={{ 
+            background: themeColors.cardBackground,
+            borderRadius: 16, // Standardized radius
+            padding: "25px",
+            boxShadow: `0 12px 35px rgba(0,0,0,0.07)`, // Standardized shadow
             position: "relative",
-            overflow: "hidden"
+            overflow: "hidden",
+            border: `1px solid ${themeColors.borderColor}`,
+            transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease"
           }}>
             <div style={{
               position: "absolute",
@@ -321,1038 +459,394 @@ const Admin = () => {
               left: 0,
               right: 0,
               height: 4,
-              background: "linear-gradient(90deg, #372163 0%, #b8a039 100%)"
+              background: themeColors.headerGradient,
+              animation: "shimmer 4s infinite linear",
+              backgroundSize: "2000px 100%"
             }}></div>
-            
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 15 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
               <div>
-                <div style={{ fontSize: 40, fontWeight: 700, color: "#372163", marginBottom: 5 }}>24</div>
-                <div style={{ color: "#666", fontSize: 16 }}>Cars Sold</div>
+                <div style={{ fontSize: 42, fontWeight: 700, color: themeColors.accentPurple, marginBottom: 5 }}>24</div>
+                <div style={{ color: themeColors.textSecondary, fontSize: 17 }}>Cars Sold</div>
               </div>
               <div style={{ 
-                background: "#e6f7ee", 
-                color: "#1eb980", 
-                padding: "4px 10px", 
+                background: `${themeColors.positive}20`,
+                color: themeColors.positive,
+                padding: "6px 12px",
                 borderRadius: 20, 
                 fontSize: 13, 
                 fontWeight: 600,
                 display: "flex",
                 alignItems: "center",
-                gap: 4
+                gap: 5
               }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
                   <polyline points="17 6 23 6 23 12"></polyline>
                 </svg>
                 12%
               </div>
             </div>
-            
-            {/* Mini Line Chart */}
-            <div style={{ height: 60 }}>
-              <svg width="100%" height="100%" viewBox="0 0 300 60" preserveAspectRatio="none">
+            <div style={{ height: 70 }}>
+              <svg width="100%" height="100%" viewBox="0 0 300 70" preserveAspectRatio="none">
                 <defs>
-                  <linearGradient id="gradient1" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor="#372163" stopOpacity="0.2" />
-                    <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+                  <linearGradient id="gradient1Dynamic" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor={themeColors.accentPurple} stopOpacity="0.4" />
+                    <stop offset="100%" stopColor={themeColors.cardBackground} stopOpacity="0.1" />
                   </linearGradient>
                 </defs>
-                <path d="M0,50 L30,45 L60,48 L90,40 L120,42 L150,38 L180,30 L210,25 L240,20 L270,15 L300,10" 
-                      fill="none" stroke="#372163" strokeWidth="2" />
-                <path d="M0,50 L30,45 L60,48 L90,40 L120,42 L150,38 L180,30 L210,25 L240,20 L270,15 L300,10 L300,60 L0,60 Z" 
-                      fill="url(#gradient1)" />
+                <path d="M0,60 L30,55 L60,58 L90,50 L120,52 L150,48 L180,40 L210,35 L240,30 L270,25 L300,20"
+                      style={{
+                        fill: "none",
+                        stroke: themeColors.accentPurple,
+                        strokeWidth: 2.5,
+                        strokeDasharray: animationsReady ? 'none' : 500,
+                        strokeDashoffset: animationsReady ? 0 : 500,    
+                        transition: "stroke-dashoffset 1.8s cubic-bezier(0.65, 0, 0.35, 1), stroke 0.3s ease",
+                      }} />
+                <path d="M0,60 L30,55 L60,58 L90,50 L120,52 L150,48 L180,40 L210,35 L240,30 L270,25 L300,20 L300,70 L0,70 Z"
+                      style={{
+                        fill: "url(#gradient1Dynamic)",
+                        opacity: animationsReady ? 1 : 0,
+                        transition: "opacity 1.2s cubic-bezier(0.65, 0, 0.35, 1) 0.5s, fill 0.3s ease",
+                      }} />
               </svg>
             </div>
-            
-            <div style={{ fontSize: 13, color: "#888", textAlign: "center", marginTop: 5 }}>
+            <div style={{ fontSize: 13, color: themeColors.textSecondary, textAlign: "center", marginTop: 10 }}>
               Last 30 days
             </div>
           </div>
           
-          {/* Total Leads Card */}
-          <div style={{ 
-            background: "#fff", 
-            borderRadius: 12, 
-            padding: 24, 
-            boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
-            position: "relative",
-            overflow: "hidden"
+          <div className="card-hover-effect" style={{ 
+            background: themeColors.cardBackground, borderRadius: 16, padding: "25px", boxShadow: `0 12px 35px rgba(0,0,0,0.07)`, position: "relative", overflow: "hidden", border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease"
           }}>
-            <div style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              height: 4,
-              background: "linear-gradient(90deg, #372163 0%, #b8a039 100%)"
-            }}></div>
-            
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 15 }}>
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, background: themeColors.headerGradient, animation: "shimmer 4s infinite linear", backgroundSize: "2000px 100%" }}></div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
               <div>
-                <div style={{ fontSize: 40, fontWeight: 700, color: "#372163", marginBottom: 5 }}>120</div>
-                <div style={{ color: "#666", fontSize: 16 }}>Total Leads</div>
+                <div style={{ fontSize: 42, fontWeight: 700, color: themeColors.accentGold, marginBottom: 5 }}>120</div>
+                <div style={{ color: themeColors.textSecondary, fontSize: 17 }}>Total Leads</div>
               </div>
-              <div style={{ 
-                background: "#e6f7ee", 
-                color: "#1eb980", 
-                padding: "4px 10px", 
-                borderRadius: 20, 
-                fontSize: 13, 
-                fontWeight: 600,
-                display: "flex",
-                alignItems: "center",
-                gap: 4
-              }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-                  <polyline points="17 6 23 6 23 12"></polyline>
-                </svg>
+              <div style={{ background: `${themeColors.positive}20`, color: themeColors.positive, padding: "6px 12px", borderRadius: 20, fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 5 }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
                 18%
               </div>
             </div>
-            
-            {/* Bar Chart */}
-            <div style={{ height: 60, display: "flex", alignItems: "flex-end", gap: 5, padding: "0 10px" }}>
-              {[35, 45, 30, 50, 40, 60, 55, 45, 70, 65, 75, 80].map((height, i) => (
+            <div style={{ height: 70, display: "flex", alignItems: "flex-end", gap: "5px", padding: "0 5px" }}>
+              {[35, 45, 30, 50, 40, 60, 55, 45, 70, 65, 75, 80].map((h, i) => (
                 <div key={i} style={{ 
-                  height: `${height}%`, 
+                  height: animationsReady ? `${h}%` : '0%',
                   flex: 1, 
-                  background: i === 11 ? "#372163" : "rgba(55, 33, 99, 0.15)",
-                  borderRadius: "3px 3px 0 0"
+                  background: i === 11 ? themeColors.accentGold : `${themeColors.accentGold}50`, // Reverted to solid color
+                  borderRadius: "4px 4px 0 0",
+                  transition: `height 0.8s cubic-bezier(0.65, 0, 0.35, 1) ${i * 0.06}s, background 0.3s ease` // Reverted transition
                 }}></div>
               ))}
             </div>
-            
-            <div style={{ fontSize: 13, color: "#888", textAlign: "center", marginTop: 5 }}>
+            <div style={{ fontSize: 13, color: themeColors.textSecondary, textAlign: "center", marginTop: 10 }}>
               Month by month growth
             </div>
           </div>
           
-          {/* Conversion Rate Card */}
-          <div style={{ 
-            background: "#fff", 
-            borderRadius: 12, 
-            padding: 24, 
-            boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
-            position: "relative",
-            overflow: "hidden"
+          <div className="card-hover-effect" style={{ 
+            background: themeColors.cardBackground, borderRadius: 16, padding: "25px", boxShadow: `0 12px 35px rgba(0,0,0,0.07)`, position: "relative", overflow: "hidden", border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease"
           }}>
-            <div style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              height: 4,
-              background: "linear-gradient(90deg, #372163 0%, #b8a039 100%)"
-            }}></div>
-            
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 15 }}>
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, background: themeColors.headerGradient, animation: "shimmer 4s infinite linear", backgroundSize: "2000px 100%" }}></div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
               <div>
-                <div style={{ fontSize: 40, fontWeight: 700, color: "#372163", marginBottom: 5 }}>20%</div>
-                <div style={{ color: "#666", fontSize: 16 }}>Conversion Rate</div>
+                <div style={{ fontSize: 42, fontWeight: 700, color: themeColors.accentCyan, marginBottom: 5 }}>20%</div>
+                <div style={{ color: themeColors.textSecondary, fontSize: 17 }}>Conversion Rate</div>
               </div>
-              <div style={{ 
-                background: "#ffebee", 
-                color: "#f44336", 
-                padding: "4px 10px", 
-                borderRadius: 20, 
-                fontSize: 13, 
-                fontWeight: 600,
-                display: "flex",
-                alignItems: "center",
-                gap: 4
-              }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
-                  <polyline points="17 18 23 18 23 12"></polyline>
-                </svg>
+              <div style={{ background: `${themeColors.negative}20`, color: themeColors.negative, padding: "6px 12px", borderRadius: 20, fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 5 }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>
                 5%
               </div>
             </div>
-            
-            {/* Donut Chart */}
-            <div style={{ height: 60, display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <div style={{ height: 70, display: "flex", justifyContent: "center", alignItems: "center",
+                  transform: animationsReady ? 'scale(1)' : 'scale(0.7)', 
+                  opacity: animationsReady ? 1 : 0,
+                  transition: 'transform 1s cubic-bezier(0.65, 0, 0.35, 1), opacity 1s cubic-bezier(0.65, 0, 0.35, 1)'
+            }}>
               <div style={{ 
-                width: 60, 
-                height: 60, 
-                borderRadius: "50%", 
-                background: "conic-gradient(#372163 0% 20%, #f0f0f0 20% 100%)",
-                position: "relative"
+                width: 70, height: 70, borderRadius: "50%",
+                background: `conic-gradient(${themeColors.accentCyan} 0% 20%, ${themeColors.borderColor} 20% 100%)`,
+                position: "relative",
+                transition: "background 0.3s ease"
               }}>
                 <div style={{ 
-                  position: "absolute", 
-                  top: "50%", 
-                  left: "50%", 
-                  transform: "translate(-50%, -50%)", 
-                  width: 40, 
-                  height: 40, 
-                  borderRadius: "50%", 
-                  background: "#fff",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "#372163"
+                  position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+                  width: 50, height: 50, borderRadius: "50%", background: themeColors.cardBackground,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 16, fontWeight: 700, color: themeColors.accentCyan,
+                  transition: "background 0.3s ease, color 0.3s ease"
                 }}>
                   20%
                 </div>
               </div>
-              
-              <div style={{ width: 100, marginLeft: 20, fontSize: 12, color: "#666" }}>
-                <div style={{ display: "flex", alignItems: "center", marginBottom: 5 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#372163", marginRight: 5 }}></div>
+              <div style={{ width: 120, marginLeft: 25, fontSize: 13, color: themeColors.textSecondary }}>
+                <div style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: "50%", background: themeColors.accentCyan, marginRight: 8, transition: "background 0.3s ease" }}></div>
                   <span>Converted</span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center" }}>
-                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#f0f0f0", marginRight: 5 }}></div>
+                  <div style={{ width: 10, height: 10, borderRadius: "50%", background: themeColors.borderColor, marginRight: 8, transition: "background 0.3s ease" }}></div>
                   <span>Potential</span>
                 </div>
               </div>
             </div>
-            
-            <div style={{ fontSize: 13, color: "#888", textAlign: "center", marginTop: 5 }}>
+            <div style={{ fontSize: 13, color: themeColors.textSecondary, textAlign: "center", marginTop: 10 }}>
               Current quarter
             </div>
           </div>
         </div>
         
-        {/* Main Charts */}
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 24, marginBottom: 30 }}>
-          {/* Performance by Vehicle Type */}
-          <div style={{ 
-            background: "#fff", 
-            borderRadius: 12, 
-            padding: 24, 
-            boxShadow: "0 2px 12px rgba(0,0,0,0.06)"
+        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 25, marginBottom: 35 }}>
+          <div className="card-hover-effect" style={{ 
+            background: themeColors.cardBackground, borderRadius: 16, padding: "25px", boxShadow: `0 12px 35px rgba(0,0,0,0.07)`, border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease"
           }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-              <h2 style={{ margin: 0, fontSize: 18, fontWeight: 600 }}>Performance by Vehicle Type</h2>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 25 }}>
+              <h2 className="interactive-title-hover" style={{ margin: 0, fontSize: 20, fontWeight: 600, color: themeColors.textPrimary }}>Vehicle Performance</h2>
               <div style={{ display: "flex", gap: 20 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 14, color: "#666" }}>
-                  <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#372163" }}></div>
-                  <span>Sedan</span>
+                {[{label: "Sedan", colorKey: "accentPurple"}, {label: "SUV", colorKey: "accentGold"}, {label: "Sports", colorKey: "accentCyan"}].map(item => (
+                  <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, color: themeColors.textSecondary }}>
+                    <div style={{ width: 12, height: 12, borderRadius: 3, background: themeColors[item.colorKey as keyof typeof themeColors], transition: "background 0.3s ease" }}></div>
+                    <span>{item.label}</span>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 14, color: "#666" }}>
-                  <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#b8a039" }}></div>
-                  <span>SUV</span>
+                ))}
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 14, color: "#666" }}>
-                  <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#7e57c2" }}></div>
-                  <span>Sports</span>
                 </div>
+            <div style={{ height: 280, position: "relative", paddingLeft: 40, paddingBottom: 30 }}>
+              <div style={{ position: "absolute", left: 0, top: 0, bottom: 30, width: 35, display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-end" }}>
+                {["100", "80", "60", "40", "20", "0"].map(label => <span key={label} style={{ fontSize: 12, color: themeColors.textSecondary, transform: "translateY(-50%)" }}>{label}</span>)}
               </div>
-            </div>
-            
-            {/* Bar Chart */}
-            <div style={{ 
-              height: 250, 
-              position: "relative", 
-              paddingLeft: 40,
-              paddingBottom: 30
-            }}>
-              {/* Y-axis labels */}
-              <div style={{ position: "absolute", left: 0, top: 0, bottom: 30, width: 40, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 12, color: "#999", transform: "translateY(-50%)" }}>100</span>
-                <span style={{ fontSize: 12, color: "#999", transform: "translateY(-50%)" }}>80</span>
-                <span style={{ fontSize: 12, color: "#999", transform: "translateY(-50%)" }}>60</span>
-                <span style={{ fontSize: 12, color: "#999", transform: "translateY(-50%)" }}>40</span>
-                <span style={{ fontSize: 12, color: "#999", transform: "translateY(-50%)" }}>20</span>
-                <span style={{ fontSize: 12, color: "#999", transform: "translateY(-50%)" }}>0</span>
-              </div>
-              
-              {/* Horizontal grid lines */}
               <div style={{ position: "absolute", left: 40, right: 0, top: 0, bottom: 30, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                 {[0, 1, 2, 3, 4, 5].map(i => (
-                  <div key={i} style={{ width: "100%", height: 1, background: i === 5 ? "#ddd" : "#f0f0f0" }}></div>
+                  <div key={i} style={{ width: "100%", height: 1, background: i === 5 ? themeColors.borderColor : `${themeColors.borderColor}80`, transition: "background 0.3s ease" }}></div>
                 ))}
               </div>
-              
-              {/* X-axis */}
               <div style={{ position: "absolute", left: 40, right: 0, bottom: 0, height: 30, display: "flex", justifyContent: "space-around", alignItems: "center" }}>
                 {["Jan", "Feb", "Mar", "Apr", "May", "Jun"].map(month => (
-                  <span key={month} style={{ fontSize: 12, color: "#999" }}>{month}</span>
+                  <span key={month} style={{ fontSize: 12, color: themeColors.textSecondary }}>{month}</span>
                 ))}
               </div>
-              
-              {/* Bars */}
               <div style={{ height: "100%", display: "flex", justifyContent: "space-around", alignItems: "flex-end" }}>
-                {/* January */}
-                <div style={{ display: "flex", alignItems: "flex-end", gap: 4 }}>
-                  <div style={{ width: 20, height: "60%", background: "#372163", borderRadius: "4px 4px 0 0" }}></div>
-                  <div style={{ width: 20, height: "40%", background: "#b8a039", borderRadius: "4px 4px 0 0" }}></div>
-                  <div style={{ width: 20, height: "20%", background: "#7e57c2", borderRadius: "4px 4px 0 0" }}></div>
+                {[
+                  { sedan: 60, suv: 40, sports: 20 }, { sedan: 70, suv: 50, sports: 25 },
+                  { sedan: 65, suv: 55, sports: 30 }, { sedan: 80, suv: 60, sports: 40 },
+                  { sedan: 75, suv: 65, sports: 45 }, { sedan: 90, suv: 70, sports: 50 }
+                ].map((monthData, monthIndex) => (
+                  <div key={monthIndex} style={{ display: "flex", alignItems: "flex-end", gap: 5, height: "100%" }}>
+                    <div style={{ width: 22, background: themeColors.accentPurple, borderRadius: "4px 4px 0 0", height: animationsReady ? `${monthData.sedan}%` : '0%', transition: `height 0.9s cubic-bezier(0.65, 0, 0.35, 1) ${monthIndex * 0.1}s, background 0.3s ease` }}></div>
+                    <div style={{ width: 22, background: themeColors.accentGold, borderRadius: "4px 4px 0 0", height: animationsReady ? `${monthData.suv}%` : '0%', transition: `height 0.9s cubic-bezier(0.65, 0, 0.35, 1) ${monthIndex * 0.1 + 0.05}s, background 0.3s ease` }}></div>
+                    <div style={{ width: 22, background: themeColors.accentCyan, borderRadius: "4px 4px 0 0", height: animationsReady ? `${monthData.sports}%` : '0%', transition: `height 0.9s cubic-bezier(0.65, 0, 0.35, 1) ${monthIndex * 0.1 + 0.1}s, background 0.3s ease` }}></div>
+                </div>
+                ))}
+                </div>
+                </div>
                 </div>
                 
-                {/* February */}
-                <div style={{ display: "flex", alignItems: "flex-end", gap: 4 }}>
-                  <div style={{ width: 20, height: "70%", background: "#372163", borderRadius: "4px 4px 0 0" }}></div>
-                  <div style={{ width: 20, height: "50%", background: "#b8a039", borderRadius: "4px 4px 0 0" }}></div>
-                  <div style={{ width: 20, height: "25%", background: "#7e57c2", borderRadius: "4px 4px 0 0" }}></div>
-                </div>
-                
-                {/* March */}
-                <div style={{ display: "flex", alignItems: "flex-end", gap: 4 }}>
-                  <div style={{ width: 20, height: "65%", background: "#372163", borderRadius: "4px 4px 0 0" }}></div>
-                  <div style={{ width: 20, height: "55%", background: "#b8a039", borderRadius: "4px 4px 0 0" }}></div>
-                  <div style={{ width: 20, height: "30%", background: "#7e57c2", borderRadius: "4px 4px 0 0" }}></div>
-                </div>
-                
-                {/* April */}
-                <div style={{ display: "flex", alignItems: "flex-end", gap: 4 }}>
-                  <div style={{ width: 20, height: "80%", background: "#372163", borderRadius: "4px 4px 0 0" }}></div>
-                  <div style={{ width: 20, height: "60%", background: "#b8a039", borderRadius: "4px 4px 0 0" }}></div>
-                  <div style={{ width: 20, height: "40%", background: "#7e57c2", borderRadius: "4px 4px 0 0" }}></div>
-                </div>
-                
-                {/* May */}
-                <div style={{ display: "flex", alignItems: "flex-end", gap: 4 }}>
-                  <div style={{ width: 20, height: "75%", background: "#372163", borderRadius: "4px 4px 0 0" }}></div>
-                  <div style={{ width: 20, height: "65%", background: "#b8a039", borderRadius: "4px 4px 0 0" }}></div>
-                  <div style={{ width: 20, height: "45%", background: "#7e57c2", borderRadius: "4px 4px 0 0" }}></div>
-                </div>
-                
-                {/* June */}
-                <div style={{ display: "flex", alignItems: "flex-end", gap: 4 }}>
-                  <div style={{ width: 20, height: "90%", background: "#372163", borderRadius: "4px 4px 0 0" }}></div>
-                  <div style={{ width: 20, height: "70%", background: "#b8a039", borderRadius: "4px 4px 0 0" }}></div>
-                  <div style={{ width: 20, height: "50%", background: "#7e57c2", borderRadius: "4px 4px 0 0" }}></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Brand Distribution */}
-          <div style={{ 
-            background: "#fff", 
-            borderRadius: 12, 
-            padding: 24, 
-            boxShadow: "0 2px 12px rgba(0,0,0,0.06)"
+          <div className="card-hover-effect" style={{ 
+            background: themeColors.cardBackground, borderRadius: 16, padding: "25px", boxShadow: `0 12px 35px rgba(0,0,0,0.07)`, border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease"
           }}>
-            <h2 style={{ margin: 0, fontSize: 18, fontWeight: 600, marginBottom: 20 }}>Brand Distribution</h2>
-            
-            {/* Pie Chart */}
+            <h2 className="interactive-title-hover" style={{ margin: "0 0 25px 0", fontSize: 20, fontWeight: 600, color: themeColors.textPrimary }}>Brand Focus</h2>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
               <div style={{ 
-                position: "relative", 
-                width: 180, 
-                height: 180, 
-                borderRadius: "50%", 
-                background: "conic-gradient(#372163 0% 45%, #b8a039 45% 70%, #7e57c2 70% 85%, #e0e0e0 85% 100%)",
-                marginBottom: 20
+                position: "relative", width: 190, height: 190, borderRadius: "50%",
+                background: `conic-gradient(${themeColors.accentPurple} 0% 45%, ${themeColors.accentGold} 45% 70%, ${themeColors.accentCyan} 70% 85%, ${themeColors.borderColor} 85% 100%)`,
+                marginBottom: 25,
+                transform: animationsReady ? 'scale(1)' : 'scale(0.7)',
+                opacity: animationsReady ? 1 : 0,
+                transition: 'transform 1.2s cubic-bezier(0.65, 0, 0.35, 1) 0.3s, opacity 1s cubic-bezier(0.65, 0, 0.35, 1) 0.3s, background 0.3s ease',
               }}>
                 <div style={{ 
-                  position: "absolute", 
-                  top: "50%", 
-                  left: "50%", 
-                  transform: "translate(-50%, -50%)", 
-                  width: 70, 
-                  height: 70, 
-                  borderRadius: "50%", 
-                  background: "#fff",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexDirection: "column"
+                  position: "absolute", top: "50%", left: "50%", 
+                  transform: "translate(-50%, -50%)",
+                  width: 80, height: 80, borderRadius: "50%", background: themeColors.cardBackground,
+                  display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column",
+                  transition: "background 0.3s ease",
+                  boxShadow: "0 5px 15px rgba(0,0,0,0.1)"
                 }}>
-                  <div style={{ fontSize: 20, fontWeight: 700 }}>180</div>
-                  <div style={{ fontSize: 12, color: "#666" }}>Total</div>
+                  <div style={{ fontSize: 22, fontWeight: 700, color: themeColors.textPrimary }}>180</div>
+                  <div style={{ fontSize: 13, color: themeColors.textSecondary }}>Total</div>
                 </div>
               </div>
-              
               <div style={{ width: "100%" }}>
-                <div style={{ 
-                  display: "flex", 
-                  justifyContent: "space-between", 
-                  alignItems: "center", 
-                  marginBottom: 12, 
-                  padding: "8px 0", 
-                  borderBottom: "1px solid #f0f0f0" 
-                }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#372163" }}></div>
-                    <span style={{ fontSize: 14 }}>Mercedes</span>
+                {[
+                  { label: "Mercedes", value: "45%", colorKey: "accentPurple" },
+                  { label: "Alfa Romeo", value: "25%", colorKey: "accentGold" },
+                  { label: "GAC", value: "15%", colorKey: "accentCyan" },
+                  { label: "Other", value: "15%", colorKey: "textSecondary" }
+                ].map((item, index) => (
+                  <div key={item.label} style={{
+                    display: "flex", justifyContent: "space-between", alignItems: "center",
+                    marginBottom: index === 3 ? 0 : 12, padding: "10px 0",
+                    borderBottom: index === 3 ? "none" : `1px solid ${themeColors.borderColor}`,
+                    transition: "border-color 0.3s ease"
+                  }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <div style={{ width: 12, height: 12, borderRadius: 3, background: themeColors[item.colorKey as keyof typeof themeColors], transition: "background 0.3s ease" }}></div>
+                      <span style={{ fontSize: 15, color: themeColors.textPrimary }}>{item.label}</span>
                   </div>
-                  <div style={{ fontSize: 14, fontWeight: 600 }}>45%</div>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: themeColors[item.colorKey as keyof typeof themeColors], transition: "color 0.3s ease" }}>{item.value}</div>
+                </div>
+                ))}
+                  </div>
+                </div>
+                  </div>
                 </div>
                 
-                <div style={{ 
-                  display: "flex", 
-                  justifyContent: "space-between", 
-                  alignItems: "center", 
-                  marginBottom: 12, 
-                  padding: "8px 0", 
-                  borderBottom: "1px solid #f0f0f0" 
-                }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#b8a039" }}></div>
-                    <span style={{ fontSize: 14 }}>Alfa Romeo</span>
-                  </div>
-                  <div style={{ fontSize: 14, fontWeight: 600 }}>25%</div>
-                </div>
-                
-                <div style={{ 
-                  display: "flex", 
-                  justifyContent: "space-between", 
-                  alignItems: "center", 
-                  marginBottom: 12, 
-                  padding: "8px 0", 
-                  borderBottom: "1px solid #f0f0f0" 
-                }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#7e57c2" }}></div>
-                    <span style={{ fontSize: 14 }}>GAC</span>
-                  </div>
-                  <div style={{ fontSize: 14, fontWeight: 600 }}>15%</div>
-                </div>
-                
-                <div style={{ 
-                  display: "flex", 
-                  justifyContent: "space-between", 
-                  alignItems: "center", 
-                  padding: "8px 0"
-                }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <div style={{ width: 12, height: 12, borderRadius: "50%", background: "#e0e0e0" }}></div>
-                    <span style={{ fontSize: 14 }}>Other</span>
-                  </div>
-                  <div style={{ fontSize: 14, fontWeight: 600 }}>15%</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* User List Section */}
-        <div style={{ marginBottom: 30 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <h2 style={{ fontSize: 20, color: "#333", fontWeight: 600 }}>Active Customers</h2>
-            <div style={{ display: "flex", gap: 12 }}>
-              <button style={{ 
-                padding: "8px 16px", 
-                borderRadius: 8, 
-                background: "rgba(55, 33, 99, 0.05)", 
-                border: "none",
-                color: "#372163",
-                fontSize: 14,
-                fontWeight: 500,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 6
-              }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="18" y1="10" x2="6" y2="10"></line>
-                  <line x1="21" y1="6" x2="3" y2="6"></line>
-                  <line x1="21" y1="14" x2="3" y2="14"></line>
-                  <line x1="18" y1="18" x2="6" y2="18"></line>
-                </svg>
+        <div style={{ marginBottom: 35 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+            <h2 className="interactive-title-hover" style={{ fontSize: 22, color: themeColors.textPrimary, fontWeight: 600 }}>Active Customers</h2>
+            <div style={{ display: "flex", gap: 15 }}>
+              <button style={{ padding: "10px 20px", borderRadius: 10, background: themeColors.cardBackgroundLighter, border: `1px solid ${themeColors.borderColor}`, color: themeColors.textSecondary, fontSize: 14, fontWeight: 500, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, transition: "background-color 0.25s ease, color 0.25s ease, border-color 0.3s ease, transform 0.15s ease, box-shadow 0.25s ease" }}
+                onMouseEnter={(e) => {e.currentTarget.style.backgroundColor = themeColors.accentPurple; e.currentTarget.style.color = themeColors.white; e.currentTarget.style.boxShadow = `0 4px 12px ${themeColors.accentPurple}30`; e.currentTarget.style.transform = 'translateY(-2px)';}}
+                onMouseLeave={(e) => {e.currentTarget.style.backgroundColor = themeColors.cardBackgroundLighter; e.currentTarget.style.color = themeColors.textSecondary; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0px)';}}
+                onMouseDown={(e) => { e.currentTarget.style.transform = 'translateY(0px) scale(0.97)'; }}
+                onMouseUp={(e) => { e.currentTarget.style.transform = 'translateY(-2px) scale(1)'; }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="10" x2="6" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="18" y1="18" x2="6" y2="18"></line></svg>
                 Filter
               </button>
-              <button style={{ 
-                padding: "8px 16px", 
-                borderRadius: 8, 
-                background: "#372163", 
-                border: "none",
-                color: "#fff",
-                fontSize: 14,
-                fontWeight: 500,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 6
-              }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="12" y1="5" x2="12" y2="19"></line>
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
+              <button style={{ padding: "10px 20px", borderRadius: 10, background: themeColors.accentPurple, border: "none", color: themeColors.white, fontSize: 14, fontWeight: 500, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, transition: "background 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease" }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = `linear-gradient(45deg, ${themeColors.accentPurple}, #8E24AA)`; e.currentTarget.style.boxShadow = `0 6px 18px ${themeColors.accentPurple}50`; e.currentTarget.style.transform = 'translateY(-2px)';}}
+                onMouseLeave={(e) => { e.currentTarget.style.background = themeColors.accentPurple; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0px)';}}
+                onMouseDown={(e) => { e.currentTarget.style.transform = 'translateY(0px) scale(0.97)'; }}
+                onMouseUp={(e) => { e.currentTarget.style.transform = 'translateY(-2px) scale(1)'; }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                 Add Customer
               </button>
             </div>
           </div>
-          
-          <div style={{ 
-            background: "#fff", 
-            borderRadius: 12, 
-            boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
-            overflow: "hidden"
-          }}>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <div className="card-hover-effect" style={{ background: themeColors.cardBackground, borderRadius: 16, boxShadow: `0 12px 35px rgba(0,0,0,0.07)`, overflowX: "auto", border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "800px" }}>
               <thead>
-                <tr style={{ background: "#f9f9f9" }}>
-                  <th style={{ padding: "16px", textAlign: "left", color: "#666", fontWeight: 600, fontSize: 14 }}>Customer</th>
-                  <th style={{ padding: "16px", textAlign: "left", color: "#666", fontWeight: 600, fontSize: 14 }}>Contact</th>
-                  <th style={{ padding: "16px", textAlign: "left", color: "#666", fontWeight: 600, fontSize: 14 }}>Interest</th>
-                  <th style={{ padding: "16px", textAlign: "left", color: "#666", fontWeight: 600, fontSize: 14 }}>Status</th>
-                  <th style={{ padding: "16px", textAlign: "left", color: "#666", fontWeight: 600, fontSize: 14 }}>Actions</th>
+                <tr style={{ background: themeColors.tableHeaderBg, borderBottom: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease" }}>
+                  {["Customer", "Contact", "Interest", "Status", "Actions"].map(header => (
+                    <th key={header} style={{ padding: "18px", textAlign: "left", color: themeColors.textSecondary, fontWeight: 600, fontSize: 15, textTransform: "uppercase", letterSpacing: "0.5px" }}>{header}</th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {/* Customer 1 */}
-                <tr 
-                  style={{ borderBottom: "1px solid #f0f0f0", cursor: "pointer" }} 
-                  onClick={() => window.location.href = '/user/AM001'}
-                >
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                      <div style={{ 
-                        width: 40, 
-                        height: 40, 
-                        borderRadius: "50%", 
-                        background: "#e6e1f2", 
-                        color: "#372163",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontWeight: 600,
-                        fontSize: 16
-                      }}>
-                        AM
+                {[
+                  { id: "AM001", initials: "AM", name: "Ahmed Al Mansouri", interaction: "2 days ago", email: "ahmed.almansouri@gmail.com", phone: "+971 55 123 4567", interest: "Mercedes-Benz S-Class", budget: "400-500K AED", status: "Test Drive Scheduled", statusColorKey: "positive" },
+                  { id: "LK001", initials: "LK", name: "Layla Khan", interaction: "Today", email: "layla.k@company.ae", phone: "+971 50 987 6543", interest: "Alfa Romeo Giulia", budget: "200-250K AED", status: "Negotiation", statusColorKey: "accentGold" },
+                  { id: "RP001", initials: "RP", name: "Raj Patel", interaction: "5 days ago", email: "raj.p@outlook.com", phone: "+971 54 567 8901", interest: "GAC GS8", budget: "150-180K AED", status: "Initial Contact", statusColorKey: "accentCyan" },
+                  { id: "MF001", initials: "MF", name: "Mohammed Al Farsi", interaction: "3 days ago", email: "m.alfarsi@etisalat.ae", phone: "+971 56 789 0123", interest: "Multiple Models", budget: "350-450K AED", status: "Follow Up Required", statusColorKey: "negative" },
+                ].map((customer, index, arr) => (
+                  <tr key={customer.id}
+                    style={{ borderBottom: index === arr.length - 1 ? "none" : `1px solid ${themeColors.borderColor}`, cursor: "pointer", transition: "background-color 0.2s ease, border-color 0.3s ease" }}
+                    onClick={() => navigate(`/user/${customer.id}`)}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = themeColors.cardBackgroundLighter}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = themeColors.cardBackground}
+                  >
+                    <td style={{ padding: "18px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
+                        <div style={{ width: 42, height: 42, borderRadius: "50%", background: `${themeColors.accentPurple}30`, color: themeColors.accentPurple, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600, fontSize: 17, transition: "background 0.3s ease, color 0.3s ease" }}>
+                          {customer.initials}
                       </div>
                       <div>
-                        <div style={{ fontWeight: 600 }}>Ahmed Al Mansouri</div>
-                        <div style={{ fontSize: 13, color: "#888" }}>Last interaction: 2 days ago</div>
+                          <div style={{ fontWeight: 600, color: themeColors.textPrimary, fontSize: 15 }}>{customer.name}</div>
+                          <div style={{ fontSize: 13, color: themeColors.textSecondary }}>Last interaction: {customer.interaction}</div>
                       </div>
                     </div>
                   </td>
-                  <td style={{ padding: "16px" }}>
-                    <div>ahmed.almansouri@gmail.com</div>
-                    <div style={{ fontSize: 13, color: "#888" }}>+971 55 123 4567</div>
+                    <td style={{ padding: "18px", fontSize: 14, color: themeColors.textPrimary }}>
+                      <div>{customer.email}</div>
+                      <div style={{ color: themeColors.textSecondary }}>{customer.phone}</div>
                   </td>
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ fontWeight: 500 }}>Mercedes-Benz S-Class</div>
-                    <div style={{ fontSize: 13, color: "#888" }}>Budget: 400-500K AED</div>
+                    <td style={{ padding: "18px", fontSize: 14, color: themeColors.textPrimary }}>
+                      <div style={{ fontWeight: 500 }}>{customer.interest}</div>
+                      <div style={{ color: themeColors.textSecondary }}>Budget: {customer.budget}</div>
                   </td>
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ 
-                      display: "inline-block",
-                      padding: "6px 12px",
-                      borderRadius: 20,
-                      fontSize: 13,
-                      fontWeight: 500,
-                      background: "#e6f7ee",
-                      color: "#1eb980"
-                    }}>
-                      Test Drive Scheduled
+                    <td style={{ padding: "18px" }}>
+                      <div style={{ display: "inline-block", padding: "7px 14px", borderRadius: 20, fontSize: 13, fontWeight: 500, background: `${themeColors[customer.statusColorKey as keyof typeof themeColors]}20`, color: themeColors[customer.statusColorKey as keyof typeof themeColors], transition: "background 0.3s ease, color 0.3s ease" }}>
+                        {customer.status}
                     </div>
                   </td>
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ display: "flex", gap: 8 }}>
-                      <button style={{ 
-                        padding: "8px", 
-                        borderRadius: 8, 
-                        background: "rgba(55, 33, 99, 0.05)", 
-                        border: "none",
-                        color: "#372163",
-                        cursor: "pointer" 
-                      }}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                        </svg>
+                    <td style={{ padding: "18px" }}>
+                      <div style={{ display: "flex", gap: 10 }}>
+                        <button style={{ padding: "10px", borderRadius: 8, background: "transparent", border: `1px solid ${themeColors.borderColor}`, color: themeColors.textSecondary, cursor: "pointer", transition: "border-color 0.2s, color 0.2s" }}
+                          onMouseEnter={(e) => {e.currentTarget.style.borderColor = themeColors.accentCyan; e.currentTarget.style.color = themeColors.accentCyan;}}
+                          onMouseLeave={(e) => {e.currentTarget.style.borderColor = themeColors.borderColor; e.currentTarget.style.color = themeColors.textSecondary;}}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2-2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
                       </button>
-                      <button style={{ 
-                        padding: "8px", 
-                        borderRadius: 8, 
-                        background: "rgba(55, 33, 99, 0.05)", 
-                        border: "none",
-                        color: "#372163",
-                        cursor: "pointer" 
-                      }}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="3 6 5 6 21 6"></polyline>
-                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        </svg>
+                        <button style={{ padding: "10px", borderRadius: 8, background: "transparent", border: `1px solid ${themeColors.borderColor}`, color: themeColors.textSecondary, cursor: "pointer", transition: "border-color 0.2s, color 0.2s" }}
+                          onMouseEnter={(e) => {e.currentTarget.style.borderColor = themeColors.negative; e.currentTarget.style.color = themeColors.negative;}}
+                          onMouseLeave={(e) => {e.currentTarget.style.borderColor = themeColors.borderColor; e.currentTarget.style.color = themeColors.textSecondary;}}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                       </button>
                     </div>
                   </td>
                 </tr>
-                
-                {/* Customer 2 */}
-                <tr style={{ borderBottom: "1px solid #f0f0f0", cursor: "pointer" }} onClick={() => alert("View profile for Layla Khan")}>
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                      <div style={{ 
-                        width: 40, 
-                        height: 40, 
-                        borderRadius: "50%", 
-                        background: "#e6e1f2", 
-                        color: "#372163",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontWeight: 600,
-                        fontSize: 16
-                      }}>
-                        LK
-                      </div>
-                      <div>
-                        <div style={{ fontWeight: 600 }}>Layla Khan</div>
-                        <div style={{ fontSize: 13, color: "#888" }}>Last interaction: Today</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td style={{ padding: "16px" }}>
-                    <div>layla.k@company.ae</div>
-                    <div style={{ fontSize: 13, color: "#888" }}>+971 50 987 6543</div>
-                  </td>
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ fontWeight: 500 }}>Alfa Romeo Giulia</div>
-                    <div style={{ fontSize: 13, color: "#888" }}>Budget: 200-250K AED</div>
-                  </td>
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ 
-                      display: "inline-block",
-                      padding: "6px 12px",
-                      borderRadius: 20,
-                      fontSize: 13,
-                      fontWeight: 500,
-                      background: "#fff8e1",
-                      color: "#ffa000"
-                    }}>
-                      Negotiation
-                    </div>
-                  </td>
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ display: "flex", gap: 8 }}>
-                      <button style={{ 
-                        padding: "8px", 
-                        borderRadius: 8, 
-                        background: "rgba(55, 33, 99, 0.05)", 
-                        border: "none",
-                        color: "#372163",
-                        cursor: "pointer" 
-                      }}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                        </svg>
-                      </button>
-                      <button style={{ 
-                        padding: "8px", 
-                        borderRadius: 8, 
-                        background: "rgba(55, 33, 99, 0.05)", 
-                        border: "none",
-                        color: "#372163",
-                        cursor: "pointer" 
-                      }}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="3 6 5 6 21 6"></polyline>
-                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        </svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                
-                {/* Customer 3 */}
-                <tr style={{ borderBottom: "1px solid #f0f0f0", cursor: "pointer" }} onClick={() => alert("View profile for Raj Patel")}>
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                      <div style={{ 
-                        width: 40, 
-                        height: 40, 
-                        borderRadius: "50%", 
-                        background: "#e6e1f2", 
-                        color: "#372163",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontWeight: 600,
-                        fontSize: 16
-                      }}>
-                        RP
-                      </div>
-                      <div>
-                        <div style={{ fontWeight: 600 }}>Raj Patel</div>
-                        <div style={{ fontSize: 13, color: "#888" }}>Last interaction: 5 days ago</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td style={{ padding: "16px" }}>
-                    <div>raj.p@outlook.com</div>
-                    <div style={{ fontSize: 13, color: "#888" }}>+971 54 567 8901</div>
-                  </td>
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ fontWeight: 500 }}>GAC GS8</div>
-                    <div style={{ fontSize: 13, color: "#888" }}>Budget: 150-180K AED</div>
-                  </td>
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ 
-                      display: "inline-block",
-                      padding: "6px 12px",
-                      borderRadius: 20,
-                      fontSize: 13,
-                      fontWeight: 500,
-                      background: "#e8eaf6",
-                      color: "#3f51b5"
-                    }}>
-                      Initial Contact
-                    </div>
-                  </td>
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ display: "flex", gap: 8 }}>
-                      <button style={{ 
-                        padding: "8px", 
-                        borderRadius: 8, 
-                        background: "rgba(55, 33, 99, 0.05)", 
-                        border: "none",
-                        color: "#372163",
-                        cursor: "pointer" 
-                      }}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                        </svg>
-                      </button>
-                      <button style={{ 
-                        padding: "8px", 
-                        borderRadius: 8, 
-                        background: "rgba(55, 33, 99, 0.05)", 
-                        border: "none",
-                        color: "#372163",
-                        cursor: "pointer" 
-                      }}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="3 6 5 6 21 6"></polyline>
-                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        </svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                
-                {/* Customer 4 */}
-                <tr style={{ borderBottom: "1px solid #f0f0f0", cursor: "pointer" }} onClick={() => alert("View profile for Sarah Wilson")}>
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                      <div style={{ 
-                        width: 40, 
-                        height: 40, 
-                        borderRadius: "50%", 
-                        background: "#e6e1f2", 
-                        color: "#372163",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontWeight: 600,
-                        fontSize: 16
-                      }}>
-                        SW
-                      </div>
-                      <div>
-                        <div style={{ fontWeight: 600 }}>Sarah Wilson</div>
-                        <div style={{ fontSize: 13, color: "#888" }}>Last interaction: 1 week ago</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td style={{ padding: "16px" }}>
-                    <div>sarah.w@gmail.com</div>
-                    <div style={{ fontSize: 13, color: "#888" }}>+971 52 345 6789</div>
-                  </td>
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ fontWeight: 500 }}>Mercedes-Benz GLC</div>
-                    <div style={{ fontSize: 13, color: "#888" }}>Budget: 280-320K AED</div>
-                  </td>
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ 
-                      display: "inline-block",
-                      padding: "6px 12px",
-                      borderRadius: 20,
-                      fontSize: 13,
-                      fontWeight: 500,
-                      background: "#ffebee",
-                      color: "#f44336"
-                    }}>
-                      Unresponsive
-                    </div>
-                  </td>
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ display: "flex", gap: 8 }}>
-                      <button style={{ 
-                        padding: "8px", 
-                        borderRadius: 8, 
-                        background: "rgba(55, 33, 99, 0.05)", 
-                        border: "none",
-                        color: "#372163",
-                        cursor: "pointer" 
-                      }}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                        </svg>
-                      </button>
-                      <button style={{ 
-                        padding: "8px", 
-                        borderRadius: 8, 
-                        background: "rgba(55, 33, 99, 0.05)", 
-                        border: "none",
-                        color: "#372163",
-                        cursor: "pointer" 
-                      }}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="3 6 5 6 21 6"></polyline>
-                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        </svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                
-                {/* Customer 5 */}
-                <tr style={{ cursor: "pointer" }} onClick={() => alert("View profile for Mohammed Al Farsi")}>
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                      <div style={{ 
-                        width: 40, 
-                        height: 40, 
-                        borderRadius: "50%", 
-                        background: "#e6e1f2", 
-                        color: "#372163",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontWeight: 600,
-                        fontSize: 16
-                      }}>
-                        MF
-                      </div>
-                      <div>
-                        <div style={{ fontWeight: 600 }}>Mohammed Al Farsi</div>
-                        <div style={{ fontSize: 13, color: "#888" }}>Last interaction: 3 days ago</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td style={{ padding: "16px" }}>
-                    <div>m.alfarsi@etisalat.ae</div>
-                    <div style={{ fontSize: 13, color: "#888" }}>+971 56 789 0123</div>
-                  </td>
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ fontWeight: 500 }}>Multiple Models</div>
-                    <div style={{ fontSize: 13, color: "#888" }}>Budget: 350-450K AED</div>
-                  </td>
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ 
-                      display: "inline-block",
-                      padding: "6px 12px",
-                      borderRadius: 20,
-                      fontSize: 13,
-                      fontWeight: 500,
-                      background: "#fce4ec",
-                      color: "#e91e63"
-                    }}>
-                      Follow Up Required
-                    </div>
-                  </td>
-                  <td style={{ padding: "16px" }}>
-                    <div style={{ display: "flex", gap: 8 }}>
-                      <button style={{ 
-                        padding: "8px", 
-                        borderRadius: 8, 
-                        background: "rgba(55, 33, 99, 0.05)", 
-                        border: "none",
-                        color: "#372163",
-                        cursor: "pointer" 
-                      }}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                        </svg>
-                      </button>
-                      <button style={{ 
-                        padding: "8px", 
-                        borderRadius: 8, 
-                        background: "rgba(55, 33, 99, 0.05)", 
-                        border: "none",
-                        color: "#372163",
-                        cursor: "pointer" 
-                      }}>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="3 6 5 6 21 6"></polyline>
-                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        </svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                ))}
               </tbody>
             </table>
           </div>
         </div>
         
-        {/* Recent Conversations Section */}
-        <div style={{ marginBottom: 30 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <h2 style={{ fontSize: 20, color: "#333", fontWeight: 600 }}>Recent Customer Interactions</h2>
-            <button style={{ 
-              padding: "8px 16px", 
-              borderRadius: 8, 
-              background: "#fff", 
-              border: "1px solid #eee",
-              color: "#372163",
-              fontSize: 14,
-              fontWeight: 500,
-              cursor: "pointer"
-            }}>
-              View All
-            </button>
+        <div style={{ marginBottom: 35 }}>
+           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+            <h2 className="interactive-title-hover" style={{ fontSize: 22, color: themeColors.textPrimary, fontWeight: 600 }}>Recent Interactions</h2>
+            <button style={{ padding: "10px 20px", borderRadius: 10, background: "transparent", border: `1px solid ${themeColors.accentPurple}`, color: themeColors.accentPurple, fontSize: 14, fontWeight: 500, cursor: "pointer", transition: "background 0.25s ease, color 0.25s ease, border-color 0.3s ease, transform 0.15s ease, box-shadow 0.25s ease" }}
+              onMouseEnter={(e) => {e.currentTarget.style.backgroundColor = themeColors.accentPurple; e.currentTarget.style.color = themeColors.white; e.currentTarget.style.boxShadow = `0 4px 12px ${themeColors.accentPurple}30`; e.currentTarget.style.transform = 'translateY(-2px)';}}
+              onMouseLeave={(e) => {e.currentTarget.style.backgroundColor = "transparent"; e.currentTarget.style.color = themeColors.accentPurple; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0px)';}}
+              onMouseDown={(e) => { e.currentTarget.style.transform = 'translateY(0px) scale(0.97)'; }}
+              onMouseUp={(e) => { e.currentTarget.style.transform = 'translateY(-2px) scale(1)'; }}
+            >View All</button>
           </div>
-          
-          <div style={{ 
-            background: "#fff", 
-            borderRadius: 12, 
-            boxShadow: "0 2px 12px rgba(0,0,0,0.06)",
-            overflow: "hidden"
-          }}>
-            <div style={{ 
-              padding: 20, 
-              borderBottom: "1px solid #f0f0f0" 
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div style={{ 
-                    width: 36, 
-                    height: 36, 
-                    borderRadius: "50%", 
-                    background: "#e6e1f2", 
-                    color: "#372163",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontWeight: 600,
-                    fontSize: 16
-                  }}>
-                    JD
+          <div className="card-hover-effect" style={{ background: themeColors.cardBackground, borderRadius: 16, boxShadow: `0 12px 35px rgba(0,0,0,0.07)`, overflow: "hidden", border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease" }}>
+            {[
+              { initials: "JD", name: "John Doe", time: "Today, 2:30 PM", message: "Interested in Mercedes A-Class but concerned about price point. Looking for premium features but within a lower budget.", tag: "Potential for GAC alternative", tagColorKey: "accentPurple" },
+              { initials: "SS", name: "Sarah Smith", time: "Yesterday, 11:15 AM", message: "Looking for SUV with good fuel economy. Discussed Mercedes GLA but was also interested in more environmentally friendly options.", tag: "High interest - Test drive", tagColorKey: "accentGold" }
+            ].map((convo, index, arr) => (
+              <div key={index} style={{ padding: 25, borderBottom: index === arr.length - 1 ? "none" : `1px solid ${themeColors.borderColor}`, transition: "border-color 0.3s ease" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12, alignItems: 'center' }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: "50%", background: `${themeColors.accentCyan}30`, color: themeColors.accentCyan, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 600, fontSize: 16, transition: "background 0.3s ease, color 0.3s ease" }}>{convo.initials}</div>
+                    <strong style={{color: themeColors.textPrimary, fontSize: 16}}>{convo.name}</strong>
                   </div>
-                  <strong>John Doe</strong>
+                  <span style={{ color: themeColors.textSecondary, fontSize: 14 }}>{convo.time}</span>
                 </div>
-                <span style={{ color: "#888", fontSize: 14 }}>Today, 2:30 PM</span>
+                <p style={{ margin: "8px 0 12px 0", color: themeColors.textSecondary, lineHeight: 1.7, fontSize: 15 }}>{convo.message}</p>
+                <div style={{ fontSize: 13, color: themeColors.white, background: themeColors[convo.tagColorKey as keyof typeof themeColors], display: "inline-block", padding: "6px 14px", borderRadius: 20, fontWeight: 500, marginTop: 5, transition: "background 0.3s ease, color 0.3s ease" }}>{convo.tag}</div>
               </div>
-              <p style={{ margin: "8px 0", color: "#444", lineHeight: 1.6 }}>
-                Interested in Mercedes A-Class but concerned about price point. Looking for premium features but within a lower budget.
-              </p>
-              <div style={{ 
-                fontSize: 14, 
-                color: "#fff", 
-                background: "#372163", 
-                display: "inline-block", 
-                padding: "4px 12px", 
-                borderRadius: 20,
-                marginTop: 4
-              }}>
-                Potential for GAC alternative model
+            ))}
               </div>
             </div>
             
-            <div style={{ 
-              padding: 20, 
-              borderBottom: "1px solid #f0f0f0" 
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                  <div style={{ 
-                    width: 36, 
-                    height: 36, 
-                    borderRadius: "50%", 
-                    background: "#e6e1f2", 
-                    color: "#372163",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontWeight: 600,
-                    fontSize: 16
-                  }}>
-                    SS
-                  </div>
-                  <strong>Sarah Smith</strong>
-                </div>
-                <span style={{ color: "#888", fontSize: 14 }}>Yesterday, 11:15 AM</span>
-              </div>
-              <p style={{ margin: "8px 0", color: "#444", lineHeight: 1.6 }}>
-                Looking for SUV with good fuel economy. Discussed Mercedes GLA but was also interested in more environmentally friendly options.
-              </p>
-              <div style={{ 
-                fontSize: 14, 
-                color: "#fff", 
-                background: "#b8a039", 
-                display: "inline-block", 
-                padding: "4px 12px", 
-                borderRadius: 20,
-                marginTop: 4
-              }}>
-                High interest - Test drive scheduled
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* CVM Insights Section */}
         <div>
-          <h2 style={{ fontSize: 20, color: "#333", marginBottom: 16, fontWeight: 600 }}>CVM Insights</h2>
-          <div style={{ 
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-            gap: 24
-          }}>
-            <div style={{ 
-              background: "#fff", 
-              padding: 24, 
-              borderRadius: 12,
-              boxShadow: "0 2px 12px rgba(0,0,0,0.06)"
-            }}>
-              <h3 style={{ fontSize: 16, color: "#372163", marginBottom: 16, fontWeight: 600, display: "flex", alignItems: "center", gap: 8 }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                </svg>
-                Top Customer Objections
+          <h2 className="interactive-title-hover" style={{ fontSize: 22, color: themeColors.textPrimary, marginBottom: 20, fontWeight: 600 }}>CVM Insights</h2>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: 25 }}>
+            {[
+              { title: "Top Customer Objections", iconName: "chat", colorKey: "accentPurple", items: [{label: "Price range higher than expected", value: "42%"}, {label: "Financing terms too restrictive", value: "28%"}, {label: "Preferred color not available", value: "15%"}] },
+              { title: "Cross-Sell Opportunities", iconName: "crossSell", colorKey: "accentGold", items: [{label: "Customers interested in service packages", value: "18"}, {label: "Potential leads for GAC from Mercedes inquiries", value: "12"}, {label: "Customers asked about leasing options", value: "8"}] }
+            ].map(insight => (
+              <div key={insight.title} className="card-hover-effect" style={{ background: themeColors.cardBackground, padding: 25, borderRadius: 16, boxShadow: `0 12px 35px rgba(0,0,0,0.07)`, border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease" }}>
+                <h3 style={{ fontSize: 18, color: themeColors[insight.colorKey as keyof typeof themeColors], marginBottom: 20, fontWeight: 600, display: "flex", alignItems: "center", gap: 10, transition: "color 0.3s ease" }}>
+                  {insight.iconName === "chat" ? 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={themeColors[insight.colorKey as keyof typeof themeColors]} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> :
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={themeColors[insight.colorKey as keyof typeof themeColors]} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                  }
+                  {insight.title}
               </h3>
-              <ul style={{ margin: "0", paddingLeft: 0, listStyleType: "none" }}>
-                <li style={{ padding: "10px 0", borderBottom: "1px solid #f0f0f0", display: "flex", justifyContent: "space-between" }}>
-                  <span>Price range higher than expected</span>
-                  <span style={{ fontWeight: 600, color: "#372163" }}>42%</span>
+                <ul style={{ margin: 0, paddingLeft: 0, listStyleType: "none" }}>
+                  {insight.items.map((item, index, arr) => (
+                    <li key={item.label} style={{ padding: "12px 0", borderBottom: index === arr.length - 1 ? "none" : `1px solid ${themeColors.borderColor}`, display: "flex", justifyContent: "space-between", alignItems: "center", transition: "border-color 0.3s ease" }}>
+                      <span style={{fontSize: 15, color: themeColors.textSecondary}}>{item.label}</span>
+                      <span style={{ fontWeight: 600, color: themeColors[insight.colorKey as keyof typeof themeColors], fontSize: 15, transition: "color 0.3s ease" }}>{item.value}</span>
                 </li>
-                <li style={{ padding: "10px 0", borderBottom: "1px solid #f0f0f0", display: "flex", justifyContent: "space-between" }}>
-                  <span>Financing terms too restrictive</span>
-                  <span style={{ fontWeight: 600, color: "#372163" }}>28%</span>
-                </li>
-                <li style={{ padding: "10px 0", display: "flex", justifyContent: "space-between" }}>
-                  <span>Preferred color not available</span>
-                  <span style={{ fontWeight: 600, color: "#372163" }}>15%</span>
-                </li>
+                  ))}
               </ul>
             </div>
-            
-            <div style={{ 
-              background: "#fff", 
-              padding: 24, 
-              borderRadius: 12,
-              boxShadow: "0 2px 12px rgba(0,0,0,0.06)"
-            }}>
-              <h3 style={{ fontSize: 16, color: "#b8a039", marginBottom: 16, fontWeight: 600, display: "flex", alignItems: "center", gap: 8 }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="12" y1="5" x2="12" y2="19"></line>
-                  <polyline points="19 12 12 19 5 12"></polyline>
-                </svg>
-                Cross-Sell Opportunities
-              </h3>
-              <ul style={{ margin: "0", paddingLeft: 0, listStyleType: "none" }}>
-                <li style={{ padding: "10px 0", borderBottom: "1px solid #f0f0f0", display: "flex", justifyContent: "space-between" }}>
-                  <span>Customers interested in service packages</span>
-                  <span style={{ fontWeight: 600, color: "#b8a039" }}>18</span>
-                </li>
-                <li style={{ padding: "10px 0", borderBottom: "1px solid #f0f0f0", display: "flex", justifyContent: "space-between" }}>
-                  <span>Potential leads for GAC from Mercedes inquiries</span>
-                  <span style={{ fontWeight: 600, color: "#b8a039" }}>12</span>
-                </li>
-                <li style={{ padding: "10px 0", display: "flex", justifyContent: "space-between" }}>
-                  <span>Customers asked about leasing options</span>
-                  <span style={{ fontWeight: 600, color: "#b8a039" }}>8</span>
-                </li>
-              </ul>
+            ))}
             </div>
           </div>
         </div>
-      </div>
+       <footer style={{ padding: "30px", marginTop: 40, textAlign: "center", color: themeColors.textSecondary, fontSize: 13, borderTop: `1px solid ${themeColors.borderColor}`, transition: "color 0.3s ease, border-color 0.3s ease" }}>
+        Gargash Enterprises CVM Dashboard © {new Date().getFullYear()}. Advanced Automotive Solutions.
+      </footer>
     </div>
   );
 };
