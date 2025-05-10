@@ -1,6 +1,7 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Car } from "../components/CarCard";
+import { VapiAssistant } from "../components/ui/VapiAssistant";
 
 const CarDetails: React.FC = () => {
   const location = useLocation();
@@ -266,6 +267,9 @@ const CarDetails: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Keep only the VapiAssistant */}
+      <VapiAssistant />
     </div>
   );
 };

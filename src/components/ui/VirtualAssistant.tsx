@@ -6,7 +6,7 @@ export function VirtualAssistant() {
   const [isOpen, setIsOpen] = useState(false)
 
   const toggleAssistant = () => {
-    setIsOpen(!isOpen)
+    setIsOpen(!isOpen);
   }
 
   return (
