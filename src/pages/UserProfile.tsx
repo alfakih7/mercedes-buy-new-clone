@@ -6,6 +6,15 @@ const UserProfile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   
+  // Add email modal states
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
+  const [emailData, setEmailData] = useState({
+    to: "",
+    subject: "",
+    message: ""
+  });
+  
   // Initial state with empty summary
   const [userData, setUserData] = useState({
     id: "AM001",
@@ -44,6 +53,62 @@ const UserProfile = () => {
       next_actions: []
     }
   });
+
+  // Email input handlers
+  const handleEmailChange = (e) => {
+    const { name, value } = e.target;
+    setEmailData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSendEmail = async () => {
+    // In a real application, you would integrate with an email API here
+    // For demo purposes, we'll simulate sending with a timeout
+    setIsLoading(true);
+    
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Show success state
+      setEmailSent(true);
+      
+      // Reset after 3 seconds
+      setTimeout(() => {
+        setShowEmailModal(false);
+        setEmailSent(false);
+        setEmailData({
+          to: "",
+          subject: "",
+          message: ""
+        });
+      }, 3000);
+    } catch (err) {
+      setError("Failed to send email. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Reset email modal when closing
+  const closeEmailModal = () => {
+    setShowEmailModal(false);
+    setEmailSent(false);
+  };
+
+  useEffect(() => {
+    // Initialize email data when user data is available
+    if (userData && userData.email) {
+      setEmailData(prev => ({
+        ...prev,
+        to: userData.email,
+        subject: `Follow-up regarding your recent interest - ${userData.id}`,
+        message: `Dear ${userData.name},\n\nThank you for your interest in our vehicles.\n\nBest regards,\nGargash Motors Team`
+      }));
+    }
+  }, [userData]);
 
   useEffect(() => {
     // Only run for Ahmed Al Mansouri
@@ -188,18 +253,21 @@ Return your response in the following JSON format:
         
         {/* Action buttons */}
         <div style={{ display: "flex", gap: "15px" }}>
-          <button style={{ 
-            background: "white", 
-            color: "#372163", 
-            border: "none", 
-            padding: "12px 20px", 
-            borderRadius: "8px", 
-            fontWeight: "600", 
-            display: "flex", 
-            alignItems: "center",
-            cursor: "pointer",
-            boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
-          }}>
+          <button 
+            onClick={() => setShowEmailModal(true)}
+            style={{ 
+              background: "white", 
+              color: "#372163", 
+              border: "none", 
+              padding: "12px 20px", 
+              borderRadius: "8px", 
+              fontWeight: "600", 
+              display: "flex", 
+              alignItems: "center",
+              cursor: "pointer",
+              boxShadow: "0 4px 6px rgba(0,0,0,0.1)"
+            }}
+          >
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: "8px" }}>
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
               <polyline points="22,6 12,13 2,6"/>
@@ -257,6 +325,206 @@ Return your response in the following JSON format:
           Update Status
         </button>
       </div>
+      
+      {/* Email Modal */}
+      {showEmailModal && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0,0,0,0.6)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: "white",
+            borderRadius: "10px",
+            width: "600px",
+            maxWidth: "90%",
+            maxHeight: "90vh",
+            overflowY: "auto",
+            padding: "25px",
+            boxShadow: "0 5px 20px rgba(0,0,0,0.2)"
+          }}>
+            <div style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "20px"
+            }}>
+              <h2 style={{ margin: 0, color: "#372163" }}>
+                {emailSent ? "Email Sent Successfully!" : "Compose Follow-up Email"}
+              </h2>
+              <button 
+                onClick={closeEmailModal}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: "22px",
+                  color: "#666"
+                }}
+              >
+                ×
+              </button>
+            </div>
+            
+            {emailSent ? (
+              <div style={{
+                textAlign: "center",
+                padding: "30px 0",
+              }}>
+                <div style={{
+                  width: "80px",
+                  height: "80px",
+                  margin: "0 auto 20px",
+                  backgroundColor: "#e6f7ee",
+                  borderRadius: "50%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1eb980" strokeWidth="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                  </svg>
+                </div>
+                <p style={{ fontSize: "18px", color: "#1eb980", marginBottom: "5px" }}>
+                  Email sent successfully!
+                </p>
+                <p style={{ color: "#666" }}>
+                  Your follow-up email has been sent to {userData.name}
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={(e) => { e.preventDefault(); handleSendEmail(); }}>
+                <div style={{ marginBottom: "15px" }}>
+                  <label style={{ display: "block", marginBottom: "8px", fontWeight: "500", color: "#444" }}>
+                    To:
+                  </label>
+                  <input
+                    type="email"
+                    name="to"
+                    value={emailData.to}
+                    onChange={handleEmailChange}
+                    style={{
+                      width: "100%",
+                      padding: "10px 12px",
+                      borderRadius: "6px",
+                      border: "1px solid #ddd",
+                      fontSize: "15px"
+                    }}
+                    required
+                  />
+                </div>
+                
+                <div style={{ marginBottom: "15px" }}>
+                  <label style={{ display: "block", marginBottom: "8px", fontWeight: "500", color: "#444" }}>
+                    Subject:
+                  </label>
+                  <input
+                    type="text"
+                    name="subject"
+                    value={emailData.subject}
+                    onChange={handleEmailChange}
+                    style={{
+                      width: "100%",
+                      padding: "10px 12px",
+                      borderRadius: "6px",
+                      border: "1px solid #ddd",
+                      fontSize: "15px"
+                    }}
+                    required
+                  />
+                </div>
+                
+                <div style={{ marginBottom: "20px" }}>
+                  <label style={{ display: "block", marginBottom: "8px", fontWeight: "500", color: "#444" }}>
+                    Message:
+                  </label>
+                  <textarea
+                    name="message"
+                    value={emailData.message}
+                    onChange={handleEmailChange}
+                    rows={8}
+                    style={{
+                      width: "100%",
+                      padding: "10px 12px",
+                      borderRadius: "6px",
+                      border: "1px solid #ddd",
+                      fontSize: "15px",
+                      resize: "vertical"
+                    }}
+                    required
+                  />
+                </div>
+                
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "15px" }}>
+                  <button
+                    type="button"
+                    onClick={closeEmailModal}
+                    style={{
+                      background: "#f0f0f0",
+                      color: "#555",
+                      border: "none",
+                      padding: "12px 20px",
+                      borderRadius: "6px",
+                      fontWeight: "500",
+                      cursor: "pointer"
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    style={{
+                      background: "#372163",
+                      color: "white",
+                      border: "none",
+                      padding: "12px 25px",
+                      borderRadius: "6px",
+                      fontWeight: "500",
+                      cursor: isLoading ? "default" : "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      opacity: isLoading ? 0.7 : 1
+                    }}
+                  >
+                    {isLoading ? (
+                      <>
+                        <div style={{ 
+                          width: "16px", 
+                          height: "16px", 
+                          borderRadius: "50%", 
+                          border: "2px solid rgba(255,255,255,0.3)", 
+                          borderTopColor: "white",
+                          animation: "spin 1s linear infinite",
+                          marginRight: "10px"
+                        }} />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: "8px" }}>
+                          <line x1="22" y1="2" x2="11" y2="13"></line>
+                          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                        Send Email
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
       
       {/* Rest of the content in grid layout */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "25px" }}>
