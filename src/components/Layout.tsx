@@ -2,6 +2,7 @@ import React, { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
 import UserAvatar from "./UserAvatar";
+import gargashLogo from '../glogo.jpeg';
 
 interface LayoutProps {
   children: ReactNode;
@@ -23,10 +24,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {/* Top bar */}
       <header style={{ background: "#040404", color: "#fff" }}>
         <div style={{ display: "flex", alignItems: "center", height: 70, maxWidth: 1400, margin: "0 auto", padding: "0 30px", justifyContent: "space-between" }}>
-          <Link to="/" style={{ display: "flex", alignItems: "center", gap: 20, textDecoration: "none", color: "#fff" }}>
-            <img src="https://ext.same-assets.com/1815046438/2150039358.svg" alt="Mercedes Logo" style={{ height: 54, width: 54 }} />
-            <span style={{ fontFamily: '"MBCorpoATitleCond-Regular-Web", Tajawal, Arial, sans-serif', fontSize: 22, fontWeight: 400, letterSpacing: 1 }}>Mercedes-Benz</span>
-          </Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+            <img src={gargashLogo} alt="Gargash Logo" style={{ height: 54, width: 90, objectFit: 'contain', background: '#fff', borderRadius: 8, padding: 4 }} />
+            <div style={{ width: 2, height: 44, background: '#fff', margin: '0 18px', borderRadius: 2 }} />
+            <Link to="/" style={{ display: "flex", alignItems: "center", gap: 20, textDecoration: "none", color: "#fff" }}>
+              <img src="https://ext.same-assets.com/1815046438/2150039358.svg" alt="Mercedes Logo" style={{ height: 54, width: 54 }} />
+              <span style={{ fontFamily: '"MBCorpoATitleCond-Regular-Web", Tajawal, Arial, sans-serif', fontSize: 22, fontWeight: 400, letterSpacing: 1 }}>Mercedes-Benz</span>
+            </Link>
+          </div>
           <div style={{ display: "flex", alignItems: "center", gap: 25 }}>
             <span style={{ marginRight: 8, fontSize: 15 }}>عربى</span>
             {isLoggedIn && user ? (
@@ -84,9 +89,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 {item.label}
               </Link>
             ))}
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
-            {/* Profile/User section (already present) */}
           </div>
         </div>
       </nav>

@@ -58,7 +58,6 @@ const Admin = () => {
     { name: "GAC Motor", logo: gacLogo },
     { name: "Sixt Rent a Car", logo: sixtLogo },
     { name: "Sixt Leasing", logo: sixtLogo },
-    { name: "Purple by Gargash", logo: "https://i.ibb.co/nzNJ9wd/purple-by-gargash.png" }
   ];
 
   const handleLogin = (e: React.FormEvent) => {
@@ -359,18 +358,18 @@ const Admin = () => {
           margin: "0 auto"
         }}>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <img 
+            {/* <img 
               src={gargashLogo} 
               alt="Gargash" 
               style={{ height: 38, filter: 'none' }}
-            />
+            /> */}
             <span style={{ 
-              marginLeft: 25,
+              // marginLeft: 25, // Removed margin as logo is gone
               color: themeColors.textPrimary,
               fontSize: 20,
               fontWeight: 500,
-              borderLeft: `1px solid ${themeColors.borderColor}`,
-              paddingLeft: 25,
+              // borderLeft: `1px solid ${themeColors.borderColor}`, // Removed border as logo is gone
+              // paddingLeft: 25, // Removed padding as logo is gone
               transition: "color 0.3s ease, border-color 0.3s ease"
             }}>
               CVM Dashboard
