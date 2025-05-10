@@ -19,6 +19,12 @@ const UserProfile = () => {
   const [emailTemplate, setEmailTemplate] = useState("follow-up");
   const [isGeneratingTemplate, setIsGeneratingTemplate] = useState(false);
   
+  // Modify email modal states to include a crafting state
+  const [isCraftingEmail, setIsCraftingEmail] = useState(false);
+  
+  // Add a state to track the email creation step
+  const [emailStep, setEmailStep] = useState(1); // 1: Select Purpose, 2: Edit Email
+  
   // Initial state with empty summary
   const [userData, setUserData] = useState({
     id: "AM001",
@@ -67,51 +73,163 @@ const UserProfile = () => {
     }));
   };
 
-  // Generate email content based on template type
-  const generateEmailContent = async (templateType: string) => {
-    setIsGeneratingTemplate(true);
+  // Move to next email step after selecting purpose
+  const proceedToEmailComposition = () => {
+    console.log("proceedToEmailComposition called with template:", emailTemplate);
+    // Always clear any previous errors
+    setError(null);
+    
+    // For all templates, directly call the craftEmail function
+    craftEmail();
+  };
+
+  // Modify the craftEmail function to work for all email purposes
+  const craftEmail = async () => {
+    console.log("craftEmail function called, template:", emailTemplate);
+    setIsCraftingEmail(true);
+    setError(null); // Reset any previous errors
     
     try {
-      // Normally we would call an API here to generate content
-      // For demo purposes, we'll use predefined templates
-      let subject = "";
-      let message = "";
+      // 1. Fetch the conversation data
+      console.log("Fetching conversation data...");
+      // Try different paths to find the conversation data file
+      let response;
+      let conversationText = "";
       
-      switch(templateType) {
-        case "follow-up":
-          subject = `Follow-up regarding your recent interest - ${userData.id}`;
-          message = `Dear ${userData.name},\n\nThank you for your recent interest in our vehicles. I wanted to personally follow up regarding your inquiry about our ${userData.carPreferences.preferredModels.join(", ")} models.\n\nIs there any additional information I can provide to assist you with your decision?\n\nBest regards,\nGargash Motors Team`;
-          break;
-        case "promote":
-          subject = `Exclusive offer for our valued ${userData.membership} member`;
-          message = `Dear ${userData.name},\n\nWe are pleased to inform you about our latest models that match your preferences for ${userData.carPreferences.preferredBrands.join(", ")}.\n\nAs a valued ${userData.membership} member, we'd like to offer you an exclusive preview of our new arrivals before they become available to the general public.\n\nWould you be interested in scheduling a private viewing?\n\nBest regards,\nGargash Motors Team`;
-          break;
-        case "service-reminder":
-          subject = `Service Reminder for your ${userData.purchaseHistory[0]?.model || "vehicle"}`;
-          message = `Dear ${userData.name},\n\nJust a friendly reminder that your ${userData.purchaseHistory[0]?.model || "vehicle"} is due for its regular maintenance service.\n\nWould you like to schedule an appointment at our service center?\n\nBest regards,\nGargash Motors Service Team`;
-          break;
-        case "event-invitation":
-          subject = `Exclusive Invitation: VIP Launch Event for ${userData.carPreferences.preferredBrands[0]} New Models`;
-          message = `Dear ${userData.name},\n\nWe're thrilled to invite you to an exclusive launch event for the newest ${userData.carPreferences.preferredBrands[0]} models.\n\nAs a valued ${userData.membership} member, you'll enjoy a private preview, refreshments, and special financing options available only to event attendees.\n\nDate: [Event Date]\nTime: 7:00 PM - 10:00 PM\nLocation: Gargash Motors Main Showroom\n\nPlease RSVP by replying to this email.\n\nWe look forward to seeing you!\n\nBest regards,\nGargash Motors Team`;
-          break;
-        case "feedback-request":
-          subject = `We value your feedback, ${userData.name}`;
-          message = `Dear ${userData.name},\n\nThank you for your continued relationship with Gargash Motors.\n\nWe would greatly appreciate your feedback on your recent experience with us. Your insights help us improve our services to better meet your expectations.\n\nCould you please take a few minutes to complete our brief satisfaction survey?\n\n[Survey Link]\n\nThank you for your time and valuable input.\n\nBest regards,\nGargash Motors Customer Experience Team`;
-          break;
+      try {
+        // First try the original path
+        response = await fetch('/src/AM001-no.txt');
+        if (response.ok) {
+          conversationText = await response.text();
+          console.log("Conversation data fetched from /src/AM001-no.txt, length:", conversationText.length);
+        }
+      } catch (fetchError) {
+        console.warn("Failed to fetch from first path:", fetchError);
       }
       
-      // Update email data with the generated content
+      // If first attempt failed, try an alternative path
+      if (!conversationText) {
+        try {
+          response = await fetch('/AM001-no.txt');
+          if (response.ok) {
+            conversationText = await response.text();
+            console.log("Conversation data fetched from /AM001-no.txt, length:", conversationText.length);
+          }
+        } catch (fetchError) {
+          console.warn("Failed to fetch from second path:", fetchError);
+        }
+      }
+      
+      // If we still don't have the data, use a fallback
+      if (!conversationText) {
+        console.warn("Could not fetch conversation data, using fallback");
+        conversationText = "Customer showed interest in Mercedes-Benz S-Class during a showroom visit on November 5, 2023.";
+      }
+      
+      // Get the current email purpose in a readable format
+      let purposeDescription = "follow-up";
+      switch(emailTemplate) {
+        case "follow-up": purposeDescription = "follow up on their recent interest"; break;
+        case "promote": purposeDescription = "promote new vehicles matching their preferences"; break;
+        case "service-reminder": purposeDescription = "remind about vehicle service"; break;
+        case "event-invitation": purposeDescription = "invite to an exclusive showroom event"; break;
+        case "feedback-request": purposeDescription = "request feedback on their recent experience"; break;
+      }
+      
+      // 2. Call OpenAI API with prompt tailored for email generation and selected purpose
+      console.log("Calling OpenAI API for", purposeDescription);
+      const apiKey = "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";
+      
+      const apiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4o",
+          messages: [
+            { 
+              role: "system", 
+              content: "You are an expert email composer for a luxury car dealership. You craft personalized, professional emails for high-value customers based on their profile and conversation history." 
+            },
+            { 
+              role: "user", 
+              content: `Craft a personalized email to ${purposeDescription} for this customer based on their profile and conversation history.
+
+The email should be professional, warm, and specifically tailored to their preferences and recent interactions. The email's purpose is to: ${purposeDescription}.
+
+CUSTOMER PROFILE:
+Name: ${userData.name}
+Membership: ${userData.membership}
+Preferences: ${JSON.stringify(userData.carPreferences)}
+Recent Interactions: ${JSON.stringify(userData.interactionHistory)}
+Purchase History: ${JSON.stringify(userData.purchaseHistory)}
+
+CONVERSATION HISTORY:
+${conversationText}
+
+Return your response in the following JSON format:
+{
+  "subject": "An engaging, specific email subject line",
+  "body": "The full email body with greeting and signature"
+}` 
+            }
+          ],
+          temperature: 0.7,
+          response_format: { type: "json_object" }
+        })
+      });
+
+      console.log("API response status:", apiResponse.status);
+
+      if (!apiResponse.ok) {
+        const errorData = await apiResponse.json().catch(() => null);
+        console.error("API error data:", errorData);
+        throw new Error(`API Error (${apiResponse.status}): ${errorData?.error?.message || 'Failed to get response from AI'}`);
+      }
+
+      const data = await apiResponse.json();
+      console.log("API response received:", data.choices ? data.choices.length : "no choices");
+      
+      if (!data || !data.choices || data.choices.length === 0) {
+        throw new Error('Invalid response from AI: empty or missing content');
+      }
+      
+      // Parse the JSON response from the content field
+      let result;
+      try {
+        result = JSON.parse(data.choices[0].message.content);
+        console.log("Parsed result:", result);
+        
+        if (!result.subject || !result.body) {
+          throw new Error('AI response missing required subject or body fields');
+        }
+      } catch (parseError) {
+        console.error('Failed to parse AI response:', parseError);
+        throw new Error('Failed to parse AI response: invalid format');
+      }
+      
+      // 3. Update the email data with the generated content
+      console.log("Updating email data with AI result");
       setEmailData(prev => ({
         ...prev,
-        subject,
-        message
+        subject: result.subject,
+        message: result.body
       }));
       
-    } catch (err) {
-      console.error('Error generating email content:', err);
-      setError('Failed to generate email content. Please try again.');
+      // Move to the next step after content is generated
+      console.log("Moving to step 2");
+      setEmailStep(2);
+      
+    } catch (err: any) {
+      console.error('Error generating email:', err);
+      setError(`Error: ${err.message || 'Failed to generate AI email'}`);
+      // Stay on the first step when there's an error
+      setEmailStep(1);
     } finally {
-      setIsGeneratingTemplate(false);
+      setIsCraftingEmail(false);
+      console.log("craftEmail function completed");
     }
   };
 
@@ -119,7 +237,6 @@ const UserProfile = () => {
   const handleTemplateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const templateType = e.target.value;
     setEmailTemplate(templateType);
-    generateEmailContent(templateType);
   };
 
   const handleSendEmail = async () => {
@@ -143,6 +260,7 @@ const UserProfile = () => {
           subject: "",
           message: ""
         });
+        setEmailStep(1); // Reset to first step for next time
       }, 3000);
     } catch (err) {
       setError("Failed to send email. Please try again.");
@@ -155,6 +273,7 @@ const UserProfile = () => {
   const closeEmailModal = () => {
     setShowEmailModal(false);
     setEmailSent(false);
+    setEmailStep(1); // Reset to first step
   };
 
   useEffect(() => {
@@ -164,9 +283,6 @@ const UserProfile = () => {
         ...prev,
         to: userData.email
       }));
-      
-      // Generate initial follow-up email content
-      generateEmailContent("follow-up");
     }
   }, [userData, showEmailModal]);
 
@@ -311,7 +427,7 @@ Return your response in the following JSON format:
           </div>
         </div>
         
-        {/* Action buttons */}
+        {/* Action buttons - Update label */}
         <div style={{ display: "flex", gap: "15px" }}>
           <button 
             onClick={() => setShowEmailModal(true)}
@@ -332,7 +448,7 @@ Return your response in the following JSON format:
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
               <polyline points="22,6 12,13 2,6"/>
             </svg>
-            AI Crafted Email
+            Email
           </button>
           
           <button style={{ 
@@ -386,7 +502,7 @@ Return your response in the following JSON format:
         </button>
       </div>
       
-      {/* Email Modal */}
+      {/* Email Modal - Updated to include step-based approach and error display */}
       {showEmailModal && (
         <div style={{
           position: "fixed",
@@ -417,7 +533,9 @@ Return your response in the following JSON format:
               marginBottom: "20px"
             }}>
               <h2 style={{ margin: 0, color: "#372163" }}>
-                {emailSent ? "Email Sent Successfully!" : "Compose Follow-up Email"}
+                {emailSent ? "Email Sent Successfully!" : (
+                  emailStep === 1 ? "Select Email Purpose" : "Compose Email"
+                )}
               </h2>
               <button 
                 onClick={closeEmailModal}
@@ -461,186 +579,274 @@ Return your response in the following JSON format:
                 </p>
               </div>
             ) : (
-              <form onSubmit={(e) => { e.preventDefault(); handleSendEmail(); }}>
-                {/* Email Options Dropdown - Enhanced and more visible */}
-                <div style={{ 
-                  marginBottom: "25px", 
-                  backgroundColor: "#f8f5ff", 
-                  padding: "15px", 
-                  borderRadius: "8px",
-                  border: "1px solid #e8e0ff"
-                }}>
-                  <label style={{ 
-                    display: "block", 
-                    marginBottom: "10px", 
-                    fontWeight: "600", 
-                    color: "#372163",
-                    fontSize: "16px" 
-                  }}>
-                    Email Purpose:
-                  </label>
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <select
-                      value={emailTemplate}
-                      onChange={handleTemplateChange}
-                      style={{
-                        flex: 1,
-                        padding: "12px 15px",
-                        borderRadius: "6px",
-                        border: "1px solid #d0c5f0",
-                        fontSize: "15px",
-                        backgroundColor: "#fff",
-                        cursor: "pointer",
-                        boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
-                      }}
-                      disabled={isGeneratingTemplate}
-                    >
-                      <option value="follow-up">Follow-up Email</option>
-                      <option value="promote">Promotional Offer</option>
-                      <option value="service-reminder">Service Reminder</option>
-                      <option value="event-invitation">Event Invitation</option>
-                      <option value="feedback-request">Feedback Request</option>
-                    </select>
-                    {isGeneratingTemplate && (
-                      <div style={{ 
-                        width: "20px", 
-                        height: "20px", 
-                        borderRadius: "50%", 
-                        border: "2px solid #ccc", 
-                        borderTopColor: "#372163",
-                        animation: "spin 1s linear infinite"
-                      }} />
-                    )}
-                  </div>
+              <>
+                {/* Display error message if there's an error */}
+                {error && (
                   <div style={{ 
-                    fontSize: "13px", 
-                    color: "#666", 
-                    marginTop: "8px",
-                    fontStyle: "italic"
+                    padding: "12px 15px", 
+                    backgroundColor: "#ffebee", 
+                    color: "#d32f2f", 
+                    borderRadius: "6px", 
+                    marginBottom: "20px",
+                    fontSize: "14px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px"
                   }}>
-                    Select an email type to generate content tailored to the customer profile
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="8" x2="12" y2="12"></line>
+                      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    {error}
                   </div>
-                </div>
-                
-                <div style={{ marginBottom: "15px" }}>
-                  <label style={{ display: "block", marginBottom: "8px", fontWeight: "500", color: "#444" }}>
-                    To:
-                  </label>
-                  <input
-                    type="email"
-                    name="to"
-                    value={emailData.to}
-                    onChange={handleEmailChange}
-                    style={{
-                      width: "100%",
-                      padding: "10px 12px",
-                      borderRadius: "6px",
-                      border: "1px solid #ddd",
-                      fontSize: "15px"
-                    }}
-                    required
-                  />
-                </div>
-                
-                <div style={{ marginBottom: "15px" }}>
-                  <label style={{ display: "block", marginBottom: "8px", fontWeight: "500", color: "#444" }}>
-                    Subject:
-                  </label>
-                  <input
-                    type="text"
-                    name="subject"
-                    value={emailData.subject}
-                    onChange={handleEmailChange}
-                    style={{
-                      width: "100%",
-                      padding: "10px 12px",
-                      borderRadius: "6px",
-                      border: "1px solid #ddd",
-                      fontSize: "15px"
-                    }}
-                    required
-                  />
-                </div>
-                
-                <div style={{ marginBottom: "20px" }}>
-                  <label style={{ display: "block", marginBottom: "8px", fontWeight: "500", color: "#444" }}>
-                    Message:
-                  </label>
-                  <textarea
-                    name="message"
-                    value={emailData.message}
-                    onChange={handleEmailChange}
-                    rows={8}
-                    style={{
-                      width: "100%",
-                      padding: "10px 12px",
-                      borderRadius: "6px",
-                      border: "1px solid #ddd",
-                      fontSize: "15px",
-                      resize: "vertical"
-                    }}
-                    required
-                  />
-                </div>
-                
-                <div style={{ display: "flex", justifyContent: "flex-end", gap: "15px" }}>
-                  <button
-                    type="button"
-                    onClick={closeEmailModal}
-                    style={{
-                      background: "#f0f0f0",
-                      color: "#555",
-                      border: "none",
-                      padding: "12px 20px",
-                      borderRadius: "6px",
-                      fontWeight: "500",
-                      cursor: "pointer"
-                    }}
-                  >
-                    Cancel
-                  </button>
-                  
-                  <button
-                    type="submit"
-                    disabled={isLoading || isGeneratingTemplate}
-                    style={{
-                      background: "#372163",
-                      color: "white",
-                      border: "none",
-                      padding: "12px 25px",
-                      borderRadius: "6px",
-                      fontWeight: "500",
-                      cursor: (isLoading || isGeneratingTemplate) ? "default" : "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      opacity: (isLoading || isGeneratingTemplate) ? 0.7 : 1
-                    }}
-                  >
-                    {isLoading ? (
-                      <>
-                        <div style={{ 
-                          width: "16px", 
-                          height: "16px", 
-                          borderRadius: "50%", 
-                          border: "2px solid rgba(255,255,255,0.3)", 
-                          borderTopColor: "white",
-                          animation: "spin 1s linear infinite",
-                          marginRight: "10px"
-                        }} />
-                        Sending...
-                      </>
-                    ) : (
-                      <>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: "8px" }}>
-                          <line x1="22" y1="2" x2="11" y2="13"></line>
-                          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                )}
+              
+                {emailStep === 1 ? (
+                  // Step 1: Email Purpose Selection
+                  <div>
+                    <div style={{ 
+                      marginBottom: "25px", 
+                      backgroundColor: "#f8f5ff", 
+                      padding: "20px", 
+                      borderRadius: "8px",
+                      border: "1px solid #e8e0ff"
+                    }}>
+                      <label style={{ 
+                        display: "block", 
+                        marginBottom: "15px", 
+                        fontWeight: "600", 
+                        color: "#372163",
+                        fontSize: "18px" 
+                      }}>
+                        Choose Email Purpose:
+                      </label>
+                      <div style={{ marginBottom: "20px" }}>
+                        <select
+                          value={emailTemplate}
+                          onChange={handleTemplateChange}
+                          style={{
+                            width: "100%",
+                            padding: "15px",
+                            borderRadius: "6px",
+                            border: "1px solid #d0c5f0",
+                            fontSize: "16px",
+                            backgroundColor: "#fff",
+                            cursor: "pointer",
+                            boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
+                          }}
+                          disabled={isCraftingEmail}
+                        >
+                          <option value="follow-up">Follow-up Email</option>
+                          <option value="promote">Promotional Offer</option>
+                          <option value="service-reminder">Service Reminder</option>
+                          <option value="event-invitation">Event Invitation</option>
+                          <option value="feedback-request">Feedback Request</option>
+                        </select>
+                      </div>
+                      
+                      <div style={{ 
+                        fontSize: "14px", 
+                        color: "#666", 
+                        marginBottom: "20px",
+                        fontStyle: "italic",
+                        lineHeight: "1.5"
+                      }}>
+                        Select an email purpose and AI will create a personalized email based on the customer profile and conversation history
+                      </div>
+                      
+                      <button
+                        onClick={proceedToEmailComposition}
+                        disabled={isCraftingEmail}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: "100%",
+                          padding: "15px",
+                          borderRadius: "6px",
+                          fontWeight: "600",
+                          fontSize: "16px",
+                          border: "none",
+                          backgroundColor: "#372163",
+                          color: "white",
+                          cursor: isCraftingEmail ? "default" : "pointer",
+                          opacity: isCraftingEmail ? 0.7 : 1
+                        }}
+                      >
+                        {isCraftingEmail ? (
+                          <>
+                            <div style={{ 
+                              width: "20px", 
+                              height: "20px", 
+                              borderRadius: "50%", 
+                              border: "2px solid rgba(255,255,255,0.3)", 
+                              borderTopColor: "white",
+                              animation: "spin 1s linear infinite",
+                              marginRight: "10px"
+                            }} />
+                            Crafting...
+                          </>
+                        ) : (
+                          <>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: "10px" }}>
+                              <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                              <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                              <circle cx="11" cy="11" r="2"></circle>
+                            </svg>
+                            Craft Email
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  // Step 2: Email Composition Form
+                  <form onSubmit={(e) => { e.preventDefault(); handleSendEmail(); }}>
+                    <div style={{ marginBottom: "15px" }}>
+                      <label style={{ display: "block", marginBottom: "8px", fontWeight: "500", color: "#444" }}>
+                        To:
+                      </label>
+                      <input
+                        type="email"
+                        name="to"
+                        value={emailData.to}
+                        onChange={handleEmailChange}
+                        style={{
+                          width: "100%",
+                          padding: "10px 12px",
+                          borderRadius: "6px",
+                          border: "1px solid #ddd",
+                          fontSize: "15px"
+                        }}
+                        required
+                      />
+                    </div>
+                    
+                    <div style={{ marginBottom: "15px" }}>
+                      <label style={{ display: "block", marginBottom: "8px", fontWeight: "500", color: "#444" }}>
+                        Subject:
+                      </label>
+                      <input
+                        type="text"
+                        name="subject"
+                        value={emailData.subject}
+                        onChange={handleEmailChange}
+                        style={{
+                          width: "100%",
+                          padding: "10px 12px",
+                          borderRadius: "6px",
+                          border: "1px solid #ddd",
+                          fontSize: "15px"
+                        }}
+                        required
+                      />
+                    </div>
+                    
+                    <div style={{ marginBottom: "20px" }}>
+                      <label style={{ display: "block", marginBottom: "8px", fontWeight: "500", color: "#444" }}>
+                        Message:
+                      </label>
+                      <textarea
+                        name="message"
+                        value={emailData.message}
+                        onChange={handleEmailChange}
+                        rows={10}
+                        style={{
+                          width: "100%",
+                          padding: "10px 12px",
+                          borderRadius: "6px",
+                          border: "1px solid #ddd",
+                          fontSize: "15px",
+                          resize: "vertical"
+                        }}
+                        required
+                      />
+                    </div>
+                    
+                    <div style={{ display: "flex", justifyContent: "space-between", gap: "15px" }}>
+                      <button
+                        type="button"
+                        onClick={() => setEmailStep(1)}
+                        style={{
+                          background: "#f0f0f0",
+                          color: "#555",
+                          border: "none",
+                          padding: "12px 20px",
+                          borderRadius: "6px",
+                          fontWeight: "500",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center"
+                        }}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: "8px" }}>
+                          <path d="M19 12H5M12 19l-7-7 7-7"/>
                         </svg>
-                        Send Email
-                      </>
-                    )}
-                  </button>
-                </div>
-              </form>
+                        Back
+                      </button>
+                      
+                      <div style={{ display: "flex", gap: "10px" }}>
+                        <button
+                          type="button"
+                          onClick={closeEmailModal}
+                          style={{
+                            background: "#f0f0f0",
+                            color: "#555",
+                            border: "none",
+                            padding: "12px 20px",
+                            borderRadius: "6px",
+                            fontWeight: "500",
+                            cursor: "pointer"
+                          }}
+                        >
+                          Cancel
+                        </button>
+                        
+                        <button
+                          type="submit"
+                          disabled={isLoading}
+                          style={{
+                            background: "#372163",
+                            color: "white",
+                            border: "none",
+                            padding: "12px 25px",
+                            borderRadius: "6px",
+                            fontWeight: "500",
+                            cursor: isLoading ? "default" : "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            opacity: isLoading ? 0.7 : 1
+                          }}
+                        >
+                          {isLoading ? (
+                            <>
+                              <div style={{ 
+                                width: "16px", 
+                                height: "16px", 
+                                borderRadius: "50%", 
+                                border: "2px solid rgba(255,255,255,0.3)", 
+                                borderTopColor: "white",
+                                animation: "spin 1s linear infinite",
+                                marginRight: "10px"
+                              }} />
+                              Sending...
+                            </>
+                          ) : (
+                            <>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: "8px" }}>
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                              </svg>
+                              Send Email
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                )}
+              </>
             )}
           </div>
         </div>
