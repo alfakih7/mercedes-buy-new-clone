@@ -440,11 +440,11 @@ Return your response in the following JSON format:
           messages: [
             { 
               role: "system", 
-              content: "You are a vehicle recommendation assistant for Gargash Motors. Your task is to recommend the top 3 budget-friendly vehicles from the available inventory that best match the customer's preferences and needs." 
+              content: "You are a vehicle recommendation assistant for Gargash Motors. Your task is to recommend the top 3 budget-friendly vehicles from the available inventory that best match the customer's preferences and needs the budget is on the conversations of the costumer. even if the budget its not their analyze and suggest based on the interactions and ton and so" 
             },
             { 
               role: "user", 
-              content: `Based on this customer's profile, interests, and conversation history, recommend the top 3 most budget-friendly vehicles from our inventory that would suit their needs.
+              content: `Based on this customer's budget, profile, interests, and conversation history, recommend the top 3 most budget-friendly vehicles from our inventory that would suit their needs and if possible make from different brands.
 
 CUSTOMER PROFILE:
 Name: ${userData.name}
