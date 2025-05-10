@@ -20,7 +20,7 @@ const CarDetails: React.FC = () => {
   };
 
   // Images for the gallery thumbnails - we'll use the same image for all in this example
-  const images = [car.img, car.img, car.img, car.img, car.img];
+  const images = [car.img, ...(car.galleryImages || [])];
   const [selectedImage, setSelectedImage] = React.useState(0);
 
   return (
@@ -38,22 +38,22 @@ const CarDetails: React.FC = () => {
           <span style={{ color: "#777", fontSize: 14 }}>You are here:</span>
           <span style={{ color: "#777", fontSize: 14, margin: "0 5px" }}>Homepage &gt;</span>
           <span style={{ color: "#777", fontSize: 14, margin: "0 5px" }}>Stock &gt;</span>
-          <span style={{ fontSize: 14 }}>Mercedes-Benz E-Class E 300 Sedan</span>
+          <span style={{ fontSize: 14 }}>{car.title} {car.variant}</span>
         </div>
       </div>
 
       {/* Main content */}
       <div style={{ maxWidth: 1200, margin: "0 auto", padding: "30px 16px", display: "flex", flexWrap: "wrap", gap: 30 }}>
         {/* Left column */}
-        <div style={{ flex: "1 1 600px" }}>
-          <h1 style={{ fontSize: 28, fontWeight: 500, color: "#333", marginBottom: 5 }}>Mercedes-Benz E-Class</h1>
-          <h2 style={{ fontSize: 20, fontWeight: 400, color: "#333", marginTop: 0 }}>E 300 Sedan</h2>
+        <div style={{ flex: "1 1 600px", minWidth: 0 }}>
+          <h1 style={{ fontSize: 28, fontWeight: 500, color: "#333", marginBottom: 5 }}>{car.title}</h1>
+          <h2 style={{ fontSize: 20, fontWeight: 400, color: "#333", marginTop: 0 }}>{car.variant}</h2>
           
           {/* Car image */}
           <div style={{ position: "relative", marginTop: 20, borderRadius: 12, overflow: "hidden" }}>
             <img 
               src={images[selectedImage]} 
-              alt="Mercedes-Benz E-Class" 
+              alt={`${car.title} ${car.variant}`} 
               style={{ width: "100%", objectFit: "cover", height: "auto", background: "#f7f7f7" }} 
             />
             <button style={{ position: "absolute", right: 10, top: 10, background: "rgba(255,255,255,0.8)", border: "none", borderRadius: 5, padding: 8, cursor: "pointer" }}>

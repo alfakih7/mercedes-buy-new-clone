@@ -15,6 +15,7 @@ export interface Car {
   availability?: string;
   year?: string;
   interior?: string;
+  galleryImages?: string[];
 }
 
 interface CarCardProps {
