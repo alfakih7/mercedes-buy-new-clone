@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import CarCard, { Car } from "../components/CarCard";
 
 // Updated car data based on actual Mercedes-Benz listings
@@ -309,6 +309,23 @@ const FilterOption: React.FC<{ title: string, showIcon?: boolean }> = ({ title, 
 };
 
 const HomePage: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm("");
+  };
+
+  const filteredCars = CARS.filter(car => {
+    const searchTermLower = searchTerm.toLowerCase();
+    // Combine title and variant for a more comprehensive search
+    const combinedText = `${car.title.toLowerCase()} ${car.variant.toLowerCase()}`;
+    return combinedText.includes(searchTermLower);
+  });
+
   return (
     <main style={{ flex: 1, width: "100%", background: "#f8f9fa", marginTop: 0, position: "relative" }}>
       <div style={{ 
@@ -336,16 +353,19 @@ const HomePage: React.FC = () => {
             alignItems: "center" 
           }}>
             Search
-            <button style={{ 
-              border: "none", 
-              background: "none", 
-              color: "#0a75c9", 
-              fontSize: 14, 
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              padding: 0
-            }}>
+            <button 
+              onClick={handleClearSearch}
+              style={{ 
+                border: "none", 
+                background: "none", 
+                color: "#0a75c9", 
+                fontSize: 14, 
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                padding: 0
+              }}
+            >
               Clear Search
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginLeft: 5 }}>
                 <path d="M18 6L6 18" stroke="#0a75c9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -368,6 +388,8 @@ const HomePage: React.FC = () => {
             <input 
               type="text" 
               placeholder="Keyword Search" 
+              value={searchTerm}
+              onChange={handleSearchChange}
               style={{ 
                 border: "none", 
                 outline: "none", 
@@ -406,7 +428,9 @@ const HomePage: React.FC = () => {
         {/* Main content */}
         <div style={{ flex: 1, padding: "24px 30px 24px 30px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 22 }}>
-            <h1 style={{ fontSize: 24, fontWeight: 600, color: "#333", letterSpacing: 0.3, margin: 0 }}>164 vehicles available</h1>
+            <h1 style={{ fontSize: 24, fontWeight: 600, color: "#333", letterSpacing: 0.3, margin: 0 }}>
+              {filteredCars.length} vehicle{filteredCars.length === 1 ? "" : "s"} available
+            </h1>
             <div style={{ 
               background: "#fff", 
               borderRadius: 4, 
@@ -432,7 +456,7 @@ const HomePage: React.FC = () => {
             gap: "20px",
             maxWidth: "100%"
           }}>
-            {CARS.map((car, idx) => (
+            {filteredCars.map((car, idx) => (
               <CarCard key={idx} car={car} index={idx} />
             ))}
           </div>

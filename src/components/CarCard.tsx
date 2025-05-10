@@ -69,7 +69,7 @@ const CarCard: React.FC<CarCardProps> = ({ car, index }) => {
       }}>
         <img 
           src={car.img}
-          alt={`${car.title} - ${car.variant}`} 
+          alt={`${car.variant} - ${car.title}`} 
           style={{ 
             position: "absolute",
             top: 0,
@@ -91,7 +91,7 @@ const CarCard: React.FC<CarCardProps> = ({ car, index }) => {
           marginBottom: 3,
           color: "#333"
         }}>
-          {car.title}
+          {car.variant}
         </div>
         
         <div style={{ 
@@ -101,7 +101,7 @@ const CarCard: React.FC<CarCardProps> = ({ car, index }) => {
           display: "flex",
           alignItems: "center"
         }}>
-          {car.variant}
+          {car.title}
           <span style={{ 
             display: "inline-block", 
             background: "#eef7ff", 
