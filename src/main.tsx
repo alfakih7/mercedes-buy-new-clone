@@ -6,6 +6,8 @@ import HomePage from "./pages/HomePage";
 import CarDetails from "./pages/CarDetails";
 import ProfilePage from "./pages/ProfilePage";
 import { UserProvider } from "./contexts/UserContext";
+import Admin from "./Admin";
+import UserProfile from "./pages/UserProfile";
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {
@@ -20,6 +22,8 @@ createRoot(rootElement).render(
           <Route path="/" element={<HomePage />} />
           <Route path="/car/:id" element={<CarDetails />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/user/:id" element={<UserProfile />} />
         </Routes>
       </Layout>
     </UserProvider>
