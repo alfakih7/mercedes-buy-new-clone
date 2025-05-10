@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 const UserProfile = () => {
   const { id } = useParams();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   
   // Add email modal states
   const [showEmailModal, setShowEmailModal] = useState(false);
@@ -14,6 +14,10 @@ const UserProfile = () => {
     subject: "",
     message: ""
   });
+  
+  // Email template states
+  const [emailTemplate, setEmailTemplate] = useState("follow-up");
+  const [isGeneratingTemplate, setIsGeneratingTemplate] = useState(false);
   
   // Initial state with empty summary
   const [userData, setUserData] = useState({
@@ -55,12 +59,67 @@ const UserProfile = () => {
   });
 
   // Email input handlers
-  const handleEmailChange = (e) => {
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setEmailData(prev => ({
       ...prev,
       [name]: value
     }));
+  };
+
+  // Generate email content based on template type
+  const generateEmailContent = async (templateType: string) => {
+    setIsGeneratingTemplate(true);
+    
+    try {
+      // Normally we would call an API here to generate content
+      // For demo purposes, we'll use predefined templates
+      let subject = "";
+      let message = "";
+      
+      switch(templateType) {
+        case "follow-up":
+          subject = `Follow-up regarding your recent interest - ${userData.id}`;
+          message = `Dear ${userData.name},\n\nThank you for your recent interest in our vehicles. I wanted to personally follow up regarding your inquiry about our ${userData.carPreferences.preferredModels.join(", ")} models.\n\nIs there any additional information I can provide to assist you with your decision?\n\nBest regards,\nGargash Motors Team`;
+          break;
+        case "promote":
+          subject = `Exclusive offer for our valued ${userData.membership} member`;
+          message = `Dear ${userData.name},\n\nWe are pleased to inform you about our latest models that match your preferences for ${userData.carPreferences.preferredBrands.join(", ")}.\n\nAs a valued ${userData.membership} member, we'd like to offer you an exclusive preview of our new arrivals before they become available to the general public.\n\nWould you be interested in scheduling a private viewing?\n\nBest regards,\nGargash Motors Team`;
+          break;
+        case "service-reminder":
+          subject = `Service Reminder for your ${userData.purchaseHistory[0]?.model || "vehicle"}`;
+          message = `Dear ${userData.name},\n\nJust a friendly reminder that your ${userData.purchaseHistory[0]?.model || "vehicle"} is due for its regular maintenance service.\n\nWould you like to schedule an appointment at our service center?\n\nBest regards,\nGargash Motors Service Team`;
+          break;
+        case "event-invitation":
+          subject = `Exclusive Invitation: VIP Launch Event for ${userData.carPreferences.preferredBrands[0]} New Models`;
+          message = `Dear ${userData.name},\n\nWe're thrilled to invite you to an exclusive launch event for the newest ${userData.carPreferences.preferredBrands[0]} models.\n\nAs a valued ${userData.membership} member, you'll enjoy a private preview, refreshments, and special financing options available only to event attendees.\n\nDate: [Event Date]\nTime: 7:00 PM - 10:00 PM\nLocation: Gargash Motors Main Showroom\n\nPlease RSVP by replying to this email.\n\nWe look forward to seeing you!\n\nBest regards,\nGargash Motors Team`;
+          break;
+        case "feedback-request":
+          subject = `We value your feedback, ${userData.name}`;
+          message = `Dear ${userData.name},\n\nThank you for your continued relationship with Gargash Motors.\n\nWe would greatly appreciate your feedback on your recent experience with us. Your insights help us improve our services to better meet your expectations.\n\nCould you please take a few minutes to complete our brief satisfaction survey?\n\n[Survey Link]\n\nThank you for your time and valuable input.\n\nBest regards,\nGargash Motors Customer Experience Team`;
+          break;
+      }
+      
+      // Update email data with the generated content
+      setEmailData(prev => ({
+        ...prev,
+        subject,
+        message
+      }));
+      
+    } catch (err) {
+      console.error('Error generating email content:', err);
+      setError('Failed to generate email content. Please try again.');
+    } finally {
+      setIsGeneratingTemplate(false);
+    }
+  };
+
+  // Handle template selection change
+  const handleTemplateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const templateType = e.target.value;
+    setEmailTemplate(templateType);
+    generateEmailContent(templateType);
   };
 
   const handleSendEmail = async () => {
@@ -99,16 +158,17 @@ const UserProfile = () => {
   };
 
   useEffect(() => {
-    // Initialize email data when user data is available
-    if (userData && userData.email) {
+    // Initialize email data when user data is available and email modal opens
+    if (userData && userData.email && showEmailModal) {
       setEmailData(prev => ({
         ...prev,
-        to: userData.email,
-        subject: `Follow-up regarding your recent interest - ${userData.id}`,
-        message: `Dear ${userData.name},\n\nThank you for your interest in our vehicles.\n\nBest regards,\nGargash Motors Team`
+        to: userData.email
       }));
+      
+      // Generate initial follow-up email content
+      generateEmailContent("follow-up");
     }
-  }, [userData]);
+  }, [userData, showEmailModal]);
 
   useEffect(() => {
     // Only run for Ahmed Al Mansouri
@@ -180,7 +240,7 @@ Return your response in the following JSON format:
           interactionSummary: result
         }));
         
-      } catch (err) {
+      } catch (err: any) {
         console.error('Error generating summary:', err);
         setError(`${err.message || 'Failed to generate AI summary'}`);
         // Don't set fallback summary, keep the error visible
@@ -402,6 +462,66 @@ Return your response in the following JSON format:
               </div>
             ) : (
               <form onSubmit={(e) => { e.preventDefault(); handleSendEmail(); }}>
+                {/* Email Options Dropdown - Enhanced and more visible */}
+                <div style={{ 
+                  marginBottom: "25px", 
+                  backgroundColor: "#f8f5ff", 
+                  padding: "15px", 
+                  borderRadius: "8px",
+                  border: "1px solid #e8e0ff"
+                }}>
+                  <label style={{ 
+                    display: "block", 
+                    marginBottom: "10px", 
+                    fontWeight: "600", 
+                    color: "#372163",
+                    fontSize: "16px" 
+                  }}>
+                    Email Purpose:
+                  </label>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <select
+                      value={emailTemplate}
+                      onChange={handleTemplateChange}
+                      style={{
+                        flex: 1,
+                        padding: "12px 15px",
+                        borderRadius: "6px",
+                        border: "1px solid #d0c5f0",
+                        fontSize: "15px",
+                        backgroundColor: "#fff",
+                        cursor: "pointer",
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
+                      }}
+                      disabled={isGeneratingTemplate}
+                    >
+                      <option value="follow-up">Follow-up Email</option>
+                      <option value="promote">Promotional Offer</option>
+                      <option value="service-reminder">Service Reminder</option>
+                      <option value="event-invitation">Event Invitation</option>
+                      <option value="feedback-request">Feedback Request</option>
+                    </select>
+                    {isGeneratingTemplate && (
+                      <div style={{ 
+                        width: "20px", 
+                        height: "20px", 
+                        borderRadius: "50%", 
+                        border: "2px solid #ccc", 
+                        borderTopColor: "#372163",
+                        animation: "spin 1s linear infinite"
+                      }} />
+                    )}
+                  </div>
+                  <div style={{ 
+                    fontSize: "13px", 
+                    color: "#666", 
+                    marginTop: "8px",
+                    fontStyle: "italic"
+                  }}>
+                    Select an email type to generate content tailored to the customer profile
+                  </div>
+                </div>
+                
                 <div style={{ marginBottom: "15px" }}>
                   <label style={{ display: "block", marginBottom: "8px", fontWeight: "500", color: "#444" }}>
                     To:
@@ -482,7 +602,7 @@ Return your response in the following JSON format:
                   
                   <button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isLoading || isGeneratingTemplate}
                     style={{
                       background: "#372163",
                       color: "white",
@@ -490,10 +610,10 @@ Return your response in the following JSON format:
                       padding: "12px 25px",
                       borderRadius: "6px",
                       fontWeight: "500",
-                      cursor: isLoading ? "default" : "pointer",
+                      cursor: (isLoading || isGeneratingTemplate) ? "default" : "pointer",
                       display: "flex",
                       alignItems: "center",
-                      opacity: isLoading ? 0.7 : 1
+                      opacity: (isLoading || isGeneratingTemplate) ? 0.7 : 1
                     }}
                   >
                     {isLoading ? (
