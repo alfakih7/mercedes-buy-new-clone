@@ -28,6 +28,34 @@ const CARS: Car[] = [
     ]
   },
   {
+    img: "https://i.ytimg.com/vi/iuRNqlRiQyI/maxresdefault.jpg",
+    title: "Mercedes-Maybach",
+    link: "#",
+    variant: "S 680 Sedan",
+    paint: "Two-Tone Obsidian Black / Rubellite Red",
+    pricePerMonth: "15,000 / month Finance",
+    price: "AED 1,200,000",
+    availability: "Available",
+    year: "2025",
+    interior: "Exclusive Nappa Leather Crystal White / Silver Grey Pearl",
+    galleryImages: ["https://via.placeholder.com/1280x720.png?text=Maybach+S-Class+Gallery+1"]
+  },
+  {
+    img: "https://www.mercedes-benz.ca/content/dam/mb-nafta/ca/myco/my25/eqe-class/eqe-suv/byo-options/MBCAN-2025-AMG-EQE-SUV-MP-018.jpg",
+    title: "Mercedes-Benz", // Title kept generic, variant specifies EQE 350
+    link: "#",
+    variant: "EQE 350 SUV",
+    paint: "Sodalite Blue Metallic",
+    pricePerMonth: "5,800 / month Finance",
+    price: "AED 450,000",
+    availability: "Available",
+    year: "2025",
+    interior: "Neva Grey / Biscay Blue Leather",
+    galleryImages: ["https://via.placeholder.com/1280x720.png?text=EQE+SUV+Gallery+1"]
+  },
+
+  
+  {
     img: "https://images.netdirector.auto/eyJrZXkiOiJuZHN0b2NrL2ltYWdlcy9zdG9jay8zNjJlNzJhNTE2Y2EwYjcwMjUzMzBlNjM4OTUzNzY3ZWZlN2JjYWM3L1cxSzNHOEhCOFNKNDk4NjA5XzQ5ODYwOV8xLmpwZyIsImJ1Y2tldCI6ImF1dG9mcyIsImxhc3RfbW9kaWZpZWQiOiIxNzQ2MTcyMjA1IiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjoxOTA5LCJoZWlnaHQiOjEwNzQsImZpdCI6ImNvbnRhaW4iLCJiYWNrZ3JvdW5kIjp7InIiOjI1NSwiZyI6MjU1LCJiIjoyNTUsImFscGhhIjoxfX19fQ==",
     title: "Mercedes-Benz A-Class",
     link: "#",
@@ -39,6 +67,46 @@ const CARS: Car[] = [
     year: "2025",
     interior: "Leather, Two-Tone Red Pepper / Black"
   },
+  {
+    img: "https://www.mbusa.com/content/dam/mb-nafta/us/myco/my25/glb-class/gallery/series/gallery-class/2025-GLB-SUV-GAL-003-J-FE-DR.jpg",
+    title: "Mercedes-Benz",
+    link: "#",
+    variant: "GLB 250 SUV",
+    paint: "Digital White Metallic",
+    pricePerMonth: "3,900 / month Finance",
+    price: "AED 290,000",
+    availability: "Coming Soon",
+    year: "2025",
+    interior: "Black MB-Tex with Dinamica",
+    galleryImages: ["https://via.placeholder.com/1280x720.png?text=GLB+SUV+Gallery+1"]
+  },
+  {
+    img: "https://images.netdirector.auto/eyJrZXkiOiJuZHN0b2NrL2ltYWdlcy9zdG9jay8zNjJlNzJhNTE2Y2EwYjcwMjUzMzBlNjM4OTUzNzY3ZWZlN2JjYWM3L1cxTjROOEhCN1NKNzMxNDExXzczMTQxMV8xLmpwZyIsImJ1Y2tldCI6ImF1dG9mcyIsImxhc3RfbW9kaWZpZWQiOiIxNzM5ODY3OTQ0IiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjoxOTA5LCJoZWlnaHQiOjEwNzQsImZpdCI6ImNvbnRhaW4iLCJiYWNrZ3JvdW5kIjp7InIiOjI1NSwiZyI6MjU1LCJiIjoyNTUsImFscGhhIjoxfX19fQ==",
+    title: "Mercedes-Benz GLA",
+    link: "#",
+    variant: "GLA 200",
+    paint: "Solid Paint Night Black",
+    pricePerMonth: "4,003.50 / month Finance",
+    price: "AED 269,899",
+    availability: "Available",
+    year: "2025",
+    interior: "Leather, Two-Tone Red Pepper / Black"
+  },
+
+  {
+    img: "https://www.mbusa.com/content/dam/mb-nafta/us/myco/my25/glc-class/glc-suv/byo-options/2025-GLC-SUV-MP-017.jpg",
+    title: "Mercedes-Benz",
+    link: "#",
+    variant: "GLC 300 SUV",
+    paint: "Graphite Grey Metallic",
+    pricePerMonth: "4,200 / month Finance",
+    price: "AED 310,000",
+    availability: "Available",
+    year: "2025",
+    interior: "Artico Black",
+    galleryImages: ["https://via.placeholder.com/1280x720.png?text=GLC+SUV+Gallery+1"]
+  },
+  
   {
     img: "https://images.netdirector.auto/eyJrZXkiOiJuZHN0b2NrL2ltYWdlcy9zdG9jay8zNjJlNzJhNTE2Y2EwYjcwMjUzMzBlNjM4OTUzNzY3ZWZlN2JjYWM3L1cxSzNHOEhCN1NKNDk1NDYwXzQ5NTQ2MF8xLmpwZyIsImJ1Y2tldCI6ImF1dG9mcyIsImxhc3RfbW9kaWZpZWQiOiIxNzM5ODY3OTA1IiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjoxOTA5LCJoZWlnaHQiOjEwNzQsImZpdCI6ImNvbnRhaW4iLCJiYWNrZ3JvdW5kIjp7InIiOjI1NSwiZyI6MjU1LCJiIjoyNTUsImFscGhhIjoxfX19fQ==",
     title: "Mercedes-Benz A-Class",
@@ -64,17 +132,19 @@ const CARS: Car[] = [
     interior: "Leather, Two-Tone Red Pepper / Black"
   },
   {
-    img: "https://images.netdirector.auto/eyJrZXkiOiJuZHN0b2NrL2ltYWdlcy9zdG9jay8zNjJlNzJhNTE2Y2EwYjcwMjUzMzBlNjM4OTUzNzY3ZWZlN2JjYWM3L1cxTjROOEhCN1NKNzMxNDExXzczMTQxMV8xLmpwZyIsImJ1Y2tldCI6ImF1dG9mcyIsImxhc3RfbW9kaWZpZWQiOiIxNzM5ODY3OTQ0IiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjoxOTA5LCJoZWlnaHQiOjEwNzQsImZpdCI6ImNvbnRhaW4iLCJiYWNrZ3JvdW5kIjp7InIiOjI1NSwiZyI6MjU1LCJiIjoyNTUsImFscGhhIjoxfX19fQ==",
-    title: "Mercedes-Benz GLA",
+    img: "https://vehicle-images.dealerinspire.com/2136-110012062/W1K5J4HB9SN497934/3a4c332cd3ae97e966112ff01ec42de3.jpg",
+    title: "Mercedes-Benz",
     link: "#",
-    variant: "GLA 200",
-    paint: "Solid Paint Night Black",
-    pricePerMonth: "4,003.50 / month Finance",
-    price: "AED 269,899",
+    variant: "CLA 250 Coupe",
+    paint: "Sun Yellow",
+    pricePerMonth: "3,800 / month Finance",
+    price: "AED 280,000",
     availability: "Available",
     year: "2025",
-    interior: "Leather, Two-Tone Red Pepper / Black"
+    interior: "Black Leather with Red Stitching",
+    galleryImages: ["https://via.placeholder.com/1280x720.png?text=CLA+Gallery+1"]
   },
+  
   {
     img: "https://images.netdirector.auto/eyJrZXkiOiJuZHN0b2NrL2ltYWdlcy9zdG9jay8zNjJlNzJhNTE2Y2EwYjcwMjUzMzBlNjM4OTUzNzY3ZWZlN2JjYWM3L1cxTjI0NzY4NzFXNDE3MjI4XzQxNzIyOF8xLmpwZyIsImJ1Y2tldCI6ImF1dG9mcyIsImxhc3RfbW9kaWZpZWQiOiIxNzQ1MDQ4ODgxIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjoxOTA5LCJoZWlnaHQiOjEwNzQsImZpdCI6ImNvbnRhaW4iLCJiYWNrZ3JvdW5kIjp7InIiOjI1NSwiZyI6MjU1LCJiIjoyNTUsImFscGhhIjoxfX19fQ==",
     title: "Mercedes-Benz GLB",
@@ -88,19 +158,7 @@ const CARS: Car[] = [
     interior: "Artico Man-Made Leather / Dinamica Microfibre Black"
   },
   // START OF NEW CARS - NOW WITH CORRECTED IMAGES
-  {
-    img: "https://vehicle-images.dealerinspire.com/efa4-11000883/thumbnails/large/W1KLF4HB7SA135990/44409711713a305db99532ec19c37bc5.jpg",
-    title: "Mercedes-Benz",
-    link: "#",
-    variant: "E 350 Sedan",
-    paint: "Metallic Obsidian Black",
-    pricePerMonth: "4,800 / month Finance",
-    price: "AED 340,000",
-    availability: "Available",
-    year: "2025",
-    interior: "Nappa Leather Macchiato Beige",
-    galleryImages: ["https://via.placeholder.com/1280x720.png?text=E-Class+Sedan+Gallery+1"]
-  },
+  
   {
     img: "https://vehicle-images.dealerinspire.com/9bd1-110012062/W1K6G6DB5RA289135/55f8195dabdde2af9a3173c345bde4ea.jpg",
     title: "Mercedes-Benz",
@@ -114,32 +172,7 @@ const CARS: Car[] = [
     interior: "Exclusive Nappa Leather Carmine Red",
     galleryImages: ["https://via.placeholder.com/1280x720.png?text=S-Class+Sedan+Gallery+1"]
   },
-  {
-    img: "https://vehicle-images.dealerinspire.com/2136-110012062/W1K5J4HB9SN497934/3a4c332cd3ae97e966112ff01ec42de3.jpg",
-    title: "Mercedes-Benz",
-    link: "#",
-    variant: "CLA 250 Coupe",
-    paint: "Sun Yellow",
-    pricePerMonth: "3,800 / month Finance",
-    price: "AED 280,000",
-    availability: "Available",
-    year: "2025",
-    interior: "Black Leather with Red Stitching",
-    galleryImages: ["https://via.placeholder.com/1280x720.png?text=CLA+Gallery+1"]
-  },
-  {
-    img: "https://www.mbusa.com/content/dam/mb-nafta/us/myco/my25/glc-class/glc-suv/byo-options/2025-GLC-SUV-MP-017.jpg",
-    title: "Mercedes-Benz",
-    link: "#",
-    variant: "GLC 300 SUV",
-    paint: "Graphite Grey Metallic",
-    pricePerMonth: "4,200 / month Finance",
-    price: "AED 310,000",
-    availability: "Available",
-    year: "2025",
-    interior: "Artico Black",
-    galleryImages: ["https://via.placeholder.com/1280x720.png?text=GLC+SUV+Gallery+1"]
-  },
+  
   {
     img: "https://imagecdnsa.zigwheels.ae/large/gallery/exterior/26/1007/mercedes-benz-gle-class-front-angle-low-view-737253.jpg",
     title: "Mercedes-Benz",
@@ -166,19 +199,7 @@ const CARS: Car[] = [
     interior: "Nappa Leather Mahogany Brown/Black",
     galleryImages: ["https://via.placeholder.com/1280x720.png?text=GLS+SUV+Gallery+1"]
   },
-   {
-    img: "https://www.mbusa.com/content/dam/mb-nafta/us/myco/my25/glb-class/gallery/series/gallery-class/2025-GLB-SUV-GAL-003-J-FE-DR.jpg",
-    title: "Mercedes-Benz",
-    link: "#",
-    variant: "GLB 250 SUV",
-    paint: "Digital White Metallic",
-    pricePerMonth: "3,900 / month Finance",
-    price: "AED 290,000",
-    availability: "Coming Soon",
-    year: "2025",
-    interior: "Black MB-Tex with Dinamica",
-    galleryImages: ["https://via.placeholder.com/1280x720.png?text=GLB+SUV+Gallery+1"]
-  },
+   
   {
     img: "https://img-ik.cars.co.za/news-site-za/images/2024/08/23C0228_002_0.jpg?tr=h-347,w-617,q-80",
     title: "Mercedes-Benz",
@@ -193,18 +214,19 @@ const CARS: Car[] = [
     galleryImages: ["https://via.placeholder.com/1280x720.png?text=G-Class+SUV+Gallery+1"]
   },
   {
-    img: "https://www.mercedes-benz.ca/content/dam/mb-nafta/ca/myco/my25/eqe-class/eqe-suv/byo-options/MBCAN-2025-AMG-EQE-SUV-MP-018.jpg",
-    title: "Mercedes-Benz", // Title kept generic, variant specifies EQE 350
+    img: "https://vehicle-images.dealerinspire.com/efa4-11000883/thumbnails/large/W1KLF4HB7SA135990/44409711713a305db99532ec19c37bc5.jpg",
+    title: "Mercedes-Benz",
     link: "#",
-    variant: "EQE 350 SUV",
-    paint: "Sodalite Blue Metallic",
-    pricePerMonth: "5,800 / month Finance",
-    price: "AED 450,000",
+    variant: "E 350 Sedan",
+    paint: "Metallic Obsidian Black",
+    pricePerMonth: "4,800 / month Finance",
+    price: "AED 340,000",
     availability: "Available",
     year: "2025",
-    interior: "Neva Grey / Biscay Blue Leather",
-    galleryImages: ["https://via.placeholder.com/1280x720.png?text=EQE+SUV+Gallery+1"]
+    interior: "Nappa Leather Macchiato Beige",
+    galleryImages: ["https://via.placeholder.com/1280x720.png?text=E-Class+Sedan+Gallery+1"]
   },
+ 
   {
     img: "https://media.ed.edmunds-media.com/mercedes-benz/eqs/2024/oem/2024_mercedes-benz_eqs_sedan_eqs-580-4matic_fq_oem_1_1280.jpg",
     title: "Mercedes-Benz", // Title kept generic, variant specifies EQS 580
@@ -231,19 +253,7 @@ const CARS: Car[] = [
     interior: "Nappa Leather Macchiato Beige / Space Grey",
     galleryImages: ["https://via.placeholder.com/1280x720.png?text=EQS+SUV+Gallery+1"]
   },
-  {
-    img: "https://i.ytimg.com/vi/iuRNqlRiQyI/maxresdefault.jpg",
-    title: "Mercedes-Maybach",
-    link: "#",
-    variant: "S 680 Sedan",
-    paint: "Two-Tone Obsidian Black / Rubellite Red",
-    pricePerMonth: "15,000 / month Finance",
-    price: "AED 1,200,000",
-    availability: "Available",
-    year: "2025",
-    interior: "Exclusive Nappa Leather Crystal White / Silver Grey Pearl",
-    galleryImages: ["https://via.placeholder.com/1280x720.png?text=Maybach+S-Class+Gallery+1"]
-  },
+  
   {
     img: "https://vehicle-images.dealerinspire.com/06d4-11000427/W1KRJ8CBXSF004806/5a449a75ebecf6ad3060b7edc6ec14f0.jpg",
     title: "Mercedes-AMG",

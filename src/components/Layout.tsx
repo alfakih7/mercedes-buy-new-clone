@@ -63,26 +63,31 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       
       {/* Navbar */}
       <nav style={{ background: "#1a1a1a", borderBottom: "1px solid #232323" }}>
-        <div style={{ display: "flex", alignItems: "center", height: 54, maxWidth: 1400, margin: "0 auto", padding: "0 30px" }}>
-          {NAV_ITEMS.map((item, i) => (
-            <Link
-              key={item.label}
-              to={item.link}
-              style={{
-                color: item.active ? "#fff" : "#b0b0b0",
-                fontWeight: item.active ? 700 : 400,
-                borderBottom: item.active ? "3px solid #0a75c9" : "none",
-                padding: "0 18px",
-                fontSize: 17,
-                lineHeight: "52px",
-                cursor: "pointer",
-                transition: "color 0.15s",
-                textDecoration: "none"
-              }}
-            >
-              {item.label}
-            </Link>
-          ))}
+        <div style={{ display: "flex", alignItems: "center", height: 54, maxWidth: 1400, margin: "0 auto", padding: "0 30px", justifyContent: "space-between" }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {NAV_ITEMS.map((item, i) => (
+              <Link
+                key={item.label}
+                to={item.link}
+                style={{
+                  color: item.active ? "#fff" : "#b0b0b0",
+                  fontWeight: item.active ? 700 : 400,
+                  borderBottom: item.active ? "3px solid #0a75c9" : "none",
+                  padding: "0 18px",
+                  fontSize: 17,
+                  lineHeight: "52px",
+                  cursor: "pointer",
+                  transition: "color 0.15s",
+                  textDecoration: "none"
+                }}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
+            {/* Profile/User section (already present) */}
+          </div>
         </div>
       </nav>
       
