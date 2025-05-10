@@ -796,20 +796,17 @@ const Admin = () => {
                 >
                   <td style={{ padding: "16px" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                      <div style={{ 
-                        width: 40, 
-                        height: 40, 
-                        borderRadius: "50%", 
-                        background: "#e6e1f2", 
-                        color: "#372163",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontWeight: 600,
-                        fontSize: 16
-                      }}>
-                        AM
-                      </div>
+                      <img 
+                        src="/src/ahmed_almansori.png"
+                        alt="Ahmed Al Mansouri"
+                        style={{ 
+                          width: 40, 
+                          height: 40, 
+                          borderRadius: "50%", 
+                          objectFit: "cover",
+                          border: "1px solid #e6e1f2"
+                        }}
+                      />
                       <div>
                         <div style={{ fontWeight: 600 }}>Ahmed Al Mansouri</div>
                         <div style={{ fontSize: 13, color: "#888" }}>Last interaction: 2 days ago</div>
