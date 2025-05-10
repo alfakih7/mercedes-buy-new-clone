@@ -1,5 +1,7 @@
 import React, { ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { useUser } from "../contexts/UserContext";
+import UserAvatar from "./UserAvatar";
 
 interface LayoutProps {
   children: ReactNode;
@@ -14,6 +16,8 @@ const NAV_ITEMS = [
 ];
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const { user, isLoggedIn, login, logout } = useUser();
+  
   return (
     <div style={{ minHeight: "100vh", background: "#f2f2f2", display: "flex", flexDirection: "column" }}>
       {/* Top bar */}
@@ -25,9 +29,34 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </Link>
           <div style={{ display: "flex", alignItems: "center", gap: 25 }}>
             <span style={{ marginRight: 8, fontSize: 15 }}>عربى</span>
-            <span style={{ display: "flex", alignItems: "center", justifyContent: "center", height: 36, width: 36, borderRadius: "50%", background: "#222" }}>
-              <svg width="20" height="20" fill="#fff" style={{ display: "block" }}><circle cx="10" cy="7" r="3.5" stroke="#fff" strokeWidth="1" fill="none"/><rect x="4" y="12" width="12" height="5" rx="2.5" stroke="#fff" strokeWidth="1" fill="none"/></svg>
-            </span>
+            {isLoggedIn && user ? (
+              <Link to="/profile" style={{ textDecoration: "none", display: "flex", alignItems: "center" }}>
+                <UserAvatar 
+                  imageSrc={user.avatar} 
+                  username={user.fullName} 
+                  size="small" 
+                />
+                <span style={{ marginLeft: 10, color: "#fff", fontSize: 14 }}>
+                  {user.fullName}
+                </span>
+              </Link>
+            ) : (
+              <div 
+                onClick={login} 
+                style={{ 
+                  display: "flex", 
+                  alignItems: "center", 
+                  justifyContent: "center", 
+                  height: 36, 
+                  width: 36, 
+                  borderRadius: "50%", 
+                  background: "#222",
+                  cursor: "pointer" 
+                }}
+              >
+                <svg width="20" height="20" fill="#fff" style={{ display: "block" }}><circle cx="10" cy="7" r="3.5" stroke="#fff" strokeWidth="1" fill="none"/><rect x="4" y="12" width="12" height="5" rx="2.5" stroke="#fff" strokeWidth="1" fill="none"/></svg>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -61,7 +90,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       {children}
       
       {/* Footer */}
-      <footer style={{ background: "#040404", color: "#ededed", display: "block", fontSize: 15, padding: "46px 16px 36px 16px" }}>
+      <footer style={{ background: "#040404", color: "#ededed", display: "block", fontSize: 15, padding: "46px 16px 36px 16px", marginTop: "auto" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", flexWrap: "wrap", gap: 34, justifyContent: "flex-start" }}>
           <div style={{ flex: 1, minWidth: 180 }}>
             <div style={{ fontWeight: 600, marginBottom: 8 }}>Buy Online</div>
@@ -74,6 +103,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div><Link to="/" style={{ color: "#ededed", textDecoration: "none", display: "block", marginBottom: 2 }}>Car Configurator</Link></div>
             <div><Link to="/" style={{ color: "#ededed", textDecoration: "none", display: "block", marginBottom: 2 }}>Current Vehicle Offers</Link></div>
             <div><Link to="/" style={{ color: "#ededed", textDecoration: "none", display: "block", marginBottom: 2 }}>Find a Showroom</Link></div>
+          </div>
+          <div style={{ flex: 1, minWidth: 180 }}>
+            <div><Link to="/profile" style={{ color: "#ededed", textDecoration: "none", display: "block", marginBottom: 2 }}>My Profile</Link></div>
+            <div><Link to="/" style={{ color: "#ededed", textDecoration: "none", display: "block", marginBottom: 2 }}>Saved Cars</Link></div>
+            <div><Link to="/" style={{ color: "#ededed", textDecoration: "none", display: "block", marginBottom: 2 }}>Test Drive History</Link></div>
           </div>
         </div>
       </footer>
