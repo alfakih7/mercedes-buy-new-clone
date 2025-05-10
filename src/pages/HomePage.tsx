@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import CarCard, { Car } from "../components/CarCard";
+import { VirtualAssistant } from "../components/ui/VirtualAssistant";
 
 // Updated car data based on actual Mercedes-Benz listings
 const CARS: Car[] = [
@@ -462,6 +463,7 @@ const HomePage: React.FC = () => {
           </div>
         </div>
       </div>
+      <VirtualAssistant />
     </main>
   );
 };
