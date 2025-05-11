@@ -3,8 +3,9 @@ import { useParams } from "react-router-dom";
 
 const UserProfile = () => {
   const { id } = useParams();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [conversationData, setConversationData] = useState<{ transcript: string, intent: string } | null>(null);
   
   // Add email modal states
   const [showEmailModal, setShowEmailModal] = useState(false);
@@ -92,9 +93,62 @@ const UserProfile = () => {
     ],
     interactionSummary: {
       summary: "",
-      next_actions: []
+      next_actions: [] as string[]
     }
   });
+
+  // Fetch data from webhook for Ahmed Al Mansouri
+  useEffect(() => {
+    const fetchConversationData = async () => {
+      // Only make the webhook request for Ahmed Al Mansouri
+      if (id === 'AM001') {
+        setIsLoading(true);
+        try {
+          const response = await fetch('https://anas42.app.n8n.cloud/webhook-test/2088f349-676c-45c5-a6cd-10598fd7e526', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              request: "conversation"
+            })
+          });
+          
+          if (!response.ok) {
+            throw new Error(`API Error: ${response.status}`);
+          }
+          
+          const data = await response.json();
+          setConversationData(data);
+          
+          // Update user data with the conversation data if needed
+          if (data.transcript) {
+            setUserData(prevData => ({
+              ...prevData,
+              interactionSummary: {
+                summary: data.transcript,
+                next_actions: data.intent ? [data.intent] : []
+              }
+            }));
+          }
+          
+        } catch (err) {
+          console.error('Error fetching conversation data:', err);
+          setError(`Failed to load conversation data: ${err instanceof Error ? err.message : 'Unknown error'}`);
+        } finally {
+          // Simulate some loading time to show the loading screen
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 2000);
+        }
+      } else {
+        // For other users, just set loading to false
+        setIsLoading(false);
+      }
+    };
+    
+    fetchConversationData();
+  }, [id]);
 
   // Email input handlers
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -505,6 +559,144 @@ Please analyze the cars data and select the 3 most budget-friendly options that 
       fetchBudgetSuggestions();
     }
   }, [id]);
+
+  // Renders loading UI
+  if (isLoading) {
+    return (
+      <div style={{ 
+        minHeight: "100vh", 
+        background: "#f8f9fa", 
+        padding: "30px",
+        fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+      }}>
+        <div style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "30px",
+          padding: "50px 20px"
+        }}>
+          <div style={{
+            width: "100%",
+            maxWidth: "800px",
+            background: "#fff",
+            borderRadius: "12px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+            padding: "40px",
+            textAlign: "center"
+          }}>
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+              gap: "20px"
+            }}>
+              <div style={{
+                width: "80px",
+                height: "80px",
+                borderRadius: "50%",
+                background: "#f0f0f0",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                position: "relative",
+                overflow: "hidden"
+              }}>
+                <div style={{
+                  fontSize: "24px",
+                  fontWeight: 600,
+                  color: "#6A1B9A"
+                }}>AM</div>
+                <div style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  borderRadius: "50%",
+                  border: "3px solid transparent",
+                  borderTopColor: "#6A1B9A",
+                  animation: "spin 1s linear infinite"
+                }}></div>
+              </div>
+              
+              <h2 style={{ margin: "0", fontSize: "24px", fontWeight: 600, color: "#333" }}>
+                Loading Profile
+              </h2>
+              <p style={{ margin: "5px 0 0", color: "#666", fontSize: "16px" }}>
+                Ahmed Al Mansouri
+              </p>
+              
+              <div style={{ margin: "20px 0", width: "100%" }}>
+                <div style={{
+                  height: "4px",
+                  width: "100%", 
+                  background: "#f0f0f0",
+                  borderRadius: "2px",
+                  overflow: "hidden"
+                }}>
+                  <div style={{
+                    height: "100%",
+                    width: "30%", 
+                    background: "linear-gradient(90deg, #6A1B9A 0%, #00796B 100%)",
+                    borderRadius: "2px",
+                    animation: "progress 2s ease-in-out infinite"
+                  }}></div>
+                </div>
+              </div>
+              
+              <p style={{ margin: "10px 0", color: "#888", fontSize: "14px" }}>
+                Retrieving customer data and conversation history...
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <style>
+          {`
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+            
+            @keyframes progress {
+              0% { width: 10%; }
+              50% { width: 70%; }
+              100% { width: 10%; }
+            }
+          `}
+        </style>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ padding: "30px", textAlign: "center" }}>
+        <h2>Error Loading Profile</h2>
+        <p>{error}</p>
+        <button 
+          onClick={() => window.location.reload()}
+          style={{
+            padding: "10px 20px",
+            background: "#6A1B9A",
+            color: "white",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontSize: "16px",
+            marginTop: "20px"
+          }}
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div style={{ 

@@ -50,6 +50,7 @@ const Admin = () => {
     { label: "Cars Sold", value: 24 },
     { label: "Total Leads", value: 120 },
     { label: "Conversion Rate", value: "20%" },
+    { label: "Loyalty Points", value: "30,250" },
   ];
 
   const brands = [
@@ -522,6 +523,62 @@ const Admin = () => {
             <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, background: themeColors.headerGradient, animation: "shimmer 4s infinite linear", backgroundSize: "2000px 100%" }}></div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
               <div>
+                <div style={{ fontSize: 42, fontWeight: 700, color: "#8E44AD", marginBottom: 5 }}>30,250</div>
+                <div style={{ color: themeColors.textSecondary, fontSize: 17 }}>Loyalty Points</div>
+              </div>
+              <div style={{ background: `${themeColors.positive}20`, color: themeColors.positive, padding: "6px 12px", borderRadius: 20, fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 5 }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                24%
+              </div>
+            </div>
+            <div style={{ height: 70, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 15px" }}>
+              {["P", "G", "S"].map((tier, i) => {
+                const colors = ["#8E44AD", "#F1C40F", "#95A5A6"];
+                const labels = ["Platinum", "Gold", "Silver"];
+                const percentages = [25, 35, 40];
+                return (
+                  <div key={tier} style={{ 
+                    display: "flex", 
+                    flexDirection: "column", 
+                    alignItems: "center", 
+                    gap: 8, 
+                    opacity: animationsReady ? 1 : 0,
+                    transform: animationsReady ? 'translateY(0)' : 'translateY(20px)',
+                    transition: `opacity 0.8s ease ${i * 0.2}s, transform 0.8s ease ${i * 0.2}s`
+                  }}>
+                    <div style={{ 
+                      width: 36, 
+                      height: 36, 
+                      borderRadius: "50%", 
+                      background: colors[i], 
+                      display: "flex", 
+                      alignItems: "center", 
+                      justifyContent: "center", 
+                      color: "white",
+                      fontSize: 16,
+                      fontWeight: 700
+                    }}>
+                      {tier}
+                    </div>
+                    <div style={{ textAlign: "center" }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: colors[i] }}>{labels[i]}</div>
+                      <div style={{ fontSize: 12, color: themeColors.textSecondary }}>{percentages[i]}%</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ fontSize: 13, color: themeColors.textSecondary, textAlign: "center", marginTop: 10 }}>
+              Tier distribution
+            </div>
+          </div>
+          
+          <div className="card-hover-effect" style={{ 
+            background: themeColors.cardBackground, borderRadius: 16, padding: "25px", boxShadow: `0 12px 35px rgba(0,0,0,0.07)`, position: "relative", overflow: "hidden", border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease"
+          }}>
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 4, background: themeColors.headerGradient, animation: "shimmer 4s infinite linear", backgroundSize: "2000px 100%" }}></div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
+              <div>
                 <div style={{ fontSize: 42, fontWeight: 700, color: themeColors.accentGold, marginBottom: 5 }}>120</div>
                 <div style={{ color: themeColors.textSecondary, fontSize: 17 }}>Total Leads</div>
               </div>
@@ -646,11 +703,11 @@ const Admin = () => {
           <div className="card-hover-effect" style={{ 
             background: themeColors.cardBackground, borderRadius: 16, padding: "25px", boxShadow: `0 12px 35px rgba(0,0,0,0.07)`, border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease"
           }}>
-            <h2 className="interactive-title-hover" style={{ margin: "0 0 25px 0", fontSize: 20, fontWeight: 600, color: themeColors.textPrimary }}>Brand Focus</h2>
+            <h2 className="interactive-title-hover" style={{ margin: "0 0 25px 0", fontSize: 20, fontWeight: 600, color: themeColors.textPrimary }}>Customer Loyalty</h2>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
               <div style={{ 
                 position: "relative", width: 190, height: 190, borderRadius: "50%",
-                background: `conic-gradient(${themeColors.accentPurple} 0% 45%, ${themeColors.accentGold} 45% 70%, ${themeColors.accentCyan} 70% 85%, ${themeColors.borderColor} 85% 100%)`,
+                background: `conic-gradient(#8E44AD 0% 25%, #F1C40F 25% 60%, #95A5A6 60% 100%)`,
                 marginBottom: 25,
                 transform: animationsReady ? 'scale(1)' : 'scale(0.7)',
                 opacity: animationsReady ? 1 : 0,
@@ -664,33 +721,35 @@ const Admin = () => {
                   transition: "background 0.3s ease",
                   boxShadow: "0 5px 15px rgba(0,0,0,0.1)"
                 }}>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: themeColors.textPrimary }}>180</div>
-                  <div style={{ fontSize: 13, color: themeColors.textSecondary }}>Total</div>
+                  <div style={{ fontSize: 22, fontWeight: 700, color: themeColors.textPrimary }}>30,250</div>
+                  <div style={{ fontSize: 13, color: themeColors.textSecondary }}>Total Points</div>
                 </div>
               </div>
               <div style={{ width: "100%" }}>
                 {[
-                  { label: "Mercedes", value: "45%", colorKey: "accentPurple" },
-                  { label: "Alfa Romeo", value: "25%", colorKey: "accentGold" },
-                  { label: "GAC", value: "15%", colorKey: "accentCyan" },
-                  { label: "Other", value: "15%", colorKey: "textSecondary" }
+                  { label: "Platinum", value: "25%", points: "12,500 pts", colorKey: "#8E44AD" },
+                  { label: "Gold", value: "35%", points: "14,550 pts", colorKey: "#F1C40F" },
+                  { label: "Silver", value: "40%", points: "3,200 pts", colorKey: "#95A5A6" }
                 ].map((item, index) => (
                   <div key={item.label} style={{
                     display: "flex", justifyContent: "space-between", alignItems: "center",
-                    marginBottom: index === 3 ? 0 : 12, padding: "10px 0",
-                    borderBottom: index === 3 ? "none" : `1px solid ${themeColors.borderColor}`,
+                    marginBottom: index === 2 ? 0 : 12, padding: "10px 0",
+                    borderBottom: index === 2 ? "none" : `1px solid ${themeColors.borderColor}`,
                     transition: "border-color 0.3s ease"
                   }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <div style={{ width: 12, height: 12, borderRadius: 3, background: themeColors[item.colorKey as keyof typeof themeColors], transition: "background 0.3s ease" }}></div>
+                      <div style={{ width: 12, height: 12, borderRadius: 3, background: item.colorKey, transition: "background 0.3s ease" }}></div>
                       <span style={{ fontSize: 15, color: themeColors.textPrimary }}>{item.label}</span>
+                    </div>
+                    <div style={{ fontSize: 15, display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+                      <span style={{ fontWeight: 600, color: item.colorKey, transition: "color 0.3s ease" }}>{item.value}</span>
+                      <span style={{ fontSize: 12, color: themeColors.textSecondary }}>{item.points}</span>
+                    </div>
                   </div>
-                    <div style={{ fontSize: 15, fontWeight: 600, color: themeColors[item.colorKey as keyof typeof themeColors], transition: "color 0.3s ease" }}>{item.value}</div>
-                </div>
                 ))}
-                  </div>
-                </div>
-                  </div>
+              </div>
+            </div>
+          </div>
                 </div>
                 
         <div style={{ marginBottom: 35 }}>
@@ -705,6 +764,17 @@ const Admin = () => {
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="10" x2="6" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="18" y1="18" x2="6" y2="18"></line></svg>
                 Filter
+              </button>
+              <button style={{ padding: "10px 20px", borderRadius: 10, background: themeColors.cardBackgroundLighter, border: `1px solid ${themeColors.borderColor}`, color: themeColors.textSecondary, fontSize: 14, fontWeight: 500, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, transition: "background-color 0.25s ease, color 0.25s ease, border-color 0.3s ease, transform 0.15s ease, box-shadow 0.25s ease" }}
+                onMouseEnter={(e) => {e.currentTarget.style.backgroundColor = "#8E44AD"; e.currentTarget.style.color = themeColors.white; e.currentTarget.style.boxShadow = `0 4px 12px #8E44AD30`; e.currentTarget.style.transform = 'translateY(-2px)';}}
+                onMouseLeave={(e) => {e.currentTarget.style.backgroundColor = themeColors.cardBackgroundLighter; e.currentTarget.style.color = themeColors.textSecondary; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.transform = 'translateY(0px)';}}
+                onMouseDown={(e) => { e.currentTarget.style.transform = 'translateY(0px) scale(0.97)'; }}
+                onMouseUp={(e) => { e.currentTarget.style.transform = 'translateY(-2px) scale(1)'; }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"></path>
+                </svg>
+                Tiers
               </button>
               <button style={{ padding: "10px 20px", borderRadius: 10, background: themeColors.accentPurple, border: "none", color: themeColors.white, fontSize: 14, fontWeight: 500, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, transition: "background 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease" }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = `linear-gradient(45deg, ${themeColors.accentPurple}, #8E24AA)`; e.currentTarget.style.boxShadow = `0 6px 18px ${themeColors.accentPurple}50`; e.currentTarget.style.transform = 'translateY(-2px)';}}
@@ -721,21 +791,27 @@ const Admin = () => {
             <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "800px" }}>
               <thead>
                 <tr style={{ background: themeColors.tableHeaderBg, borderBottom: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease" }}>
-                  {["Customer", "Contact", "Interest", "Status", "Actions"].map(header => (
+                  {["Customer", "Contact & Tier", "Interest", "Status", "Actions"].map(header => (
                     <th key={header} style={{ padding: "18px", textAlign: "left", color: themeColors.textSecondary, fontWeight: 600, fontSize: 15, textTransform: "uppercase", letterSpacing: "0.5px" }}>{header}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {[
-                  { id: "AM001", initials: "AM", name: "Ahmed Al Mansouri", interaction: "2 days ago", email: "ahmed.almansouri@gmail.com", phone: "+971 55 123 4567", interest: "Mercedes-Benz S-Class", budget: "400-500K AED", status: "Test Drive Scheduled", statusColorKey: "positive" },
-                  { id: "LK001", initials: "LK", name: "Layla Khan", interaction: "Today", email: "layla.k@company.ae", phone: "+971 50 987 6543", interest: "Alfa Romeo Giulia", budget: "200-250K AED", status: "Negotiation", statusColorKey: "accentGold" },
-                  { id: "RP001", initials: "RP", name: "Raj Patel", interaction: "5 days ago", email: "raj.p@outlook.com", phone: "+971 54 567 8901", interest: "GAC GS8", budget: "150-180K AED", status: "Initial Contact", statusColorKey: "accentCyan" },
-                  { id: "MF001", initials: "MF", name: "Mohammed Al Farsi", interaction: "3 days ago", email: "m.alfarsi@etisalat.ae", phone: "+971 56 789 0123", interest: "Multiple Models", budget: "350-450K AED", status: "Follow Up Required", statusColorKey: "negative" },
+                  { id: "AM001", initials: "AM", name: "Ahmed Al Mansouri", interaction: "2 days ago", email: "ahmed.almansouri@gmail.com", phone: "+971 55 123 4567", interest: "Mercedes-Benz S-Class", budget: "400-500K AED", status: "Test Drive Scheduled", statusColorKey: "positive", points: 12500, tier: "Platinum" },
+                  { id: "LK001", initials: "LK", name: "Layla Khan", interaction: "Today", email: "layla.k@company.ae", phone: "+971 50 987 6543", interest: "Alfa Romeo Giulia", budget: "200-250K AED", status: "Negotiation", statusColorKey: "accentGold", points: 8750, tier: "Gold" },
+                  { id: "RP001", initials: "RP", name: "Raj Patel", interaction: "5 days ago", email: "raj.p@outlook.com", phone: "+971 54 567 8901", interest: "GAC GS8", budget: "150-180K AED", status: "Initial Contact", statusColorKey: "accentCyan", points: 3200, tier: "Silver" },
+                  { id: "MF001", initials: "MF", name: "Mohammed Al Farsi", interaction: "3 days ago", email: "m.alfarsi@etisalat.ae", phone: "+971 56 789 0123", interest: "Multiple Models", budget: "350-450K AED", status: "Follow Up Required", statusColorKey: "negative", points: 5800, tier: "Gold" },
                 ].map((customer, index, arr) => (
                   <tr key={customer.id}
                     style={{ borderBottom: index === arr.length - 1 ? "none" : `1px solid ${themeColors.borderColor}`, cursor: "pointer", transition: "background-color 0.2s ease, border-color 0.3s ease" }}
-                    onClick={() => navigate(`/user/${customer.id}`)}
+                    onClick={() => {
+                      // Special handling for Ahmed Al Mansouri
+                      if (customer.id === "AM001") {
+                        console.log("Navigating to Ahmed Al Mansouri's profile...");
+                      }
+                      navigate(`/user/${customer.id}`);
+                    }}
                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = themeColors.cardBackgroundLighter}
                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = themeColors.cardBackground}
                   >
@@ -745,7 +821,27 @@ const Admin = () => {
                           {customer.initials}
                       </div>
                       <div>
-                          <div style={{ fontWeight: 600, color: themeColors.textPrimary, fontSize: 15 }}>{customer.name}</div>
+                          <div style={{ fontWeight: 600, color: themeColors.textPrimary, fontSize: 15, display: "flex", alignItems: "center", gap: 8 }}>
+                            {customer.name}
+                            <div style={{ 
+                              fontSize: 10, 
+                              fontWeight: 700, 
+                              padding: "2px 7px", 
+                              borderRadius: 4,
+                              color: "#FFF",
+                              background: customer.tier === "Platinum" ? "#8E44AD" : 
+                                        customer.tier === "Gold" ? "#F1C40F" : 
+                                        "#95A5A6",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 3
+                            }}>
+                              <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M12 2L15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2z"></path>
+                              </svg>
+                              {customer.tier}
+                            </div>
+                          </div>
                           <div style={{ fontSize: 13, color: themeColors.textSecondary }}>Last interaction: {customer.interaction}</div>
                       </div>
                     </div>
@@ -753,6 +849,21 @@ const Admin = () => {
                     <td style={{ padding: "18px", fontSize: 14, color: themeColors.textPrimary }}>
                       <div>{customer.email}</div>
                       <div style={{ color: themeColors.textSecondary }}>{customer.phone}</div>
+                      <div style={{ 
+                        marginTop: 5,
+                        display: "flex", 
+                        alignItems: "center",
+                        gap: 5,
+                        color: themeColors.textSecondary,
+                        fontSize: 12
+                      }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <line x1="12" y1="8" x2="12" y2="12"></line>
+                          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        {customer.points.toLocaleString()} loyalty points
+                      </div>
                   </td>
                     <td style={{ padding: "18px", fontSize: 14, color: themeColors.textPrimary }}>
                       <div style={{ fontWeight: 500 }}>{customer.interest}</div>
@@ -798,7 +909,7 @@ const Admin = () => {
           </div>
           <div className="card-hover-effect" style={{ background: themeColors.cardBackground, borderRadius: 16, boxShadow: `0 12px 35px rgba(0,0,0,0.07)`, overflow: "hidden", border: `1px solid ${themeColors.borderColor}`, transition: "background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease" }}>
             {[
-              { initials: "JD", name: "John Doe", time: "Today, 2:30 PM", message: "Interested in Mercedes A-Class but concerned about price point. Looking for premium features but within a lower budget.", tag: "Potential for GAC alternative", tagColorKey: "accentPurple" },
+              { initials: "JD", name: "Mohamed Ahmed", time: "Today, 2:30 PM", message: "Interested in Mercedes A-Class but concerned about price point. Looking for premium features but within a lower budget.", tag: "Potential for GAC alternative", tagColorKey: "accentPurple" },
               { initials: "SS", name: "Sarah Smith", time: "Yesterday, 11:15 AM", message: "Looking for SUV with good fuel economy. Discussed Mercedes GLA but was also interested in more environmentally friendly options.", tag: "High interest - Test drive", tagColorKey: "accentGold" }
             ].map((convo, index, arr) => (
               <div key={index} style={{ padding: 25, borderBottom: index === arr.length - 1 ? "none" : `1px solid ${themeColors.borderColor}`, transition: "border-color 0.3s ease" }}>
