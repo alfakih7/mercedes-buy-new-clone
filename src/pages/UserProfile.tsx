@@ -104,7 +104,7 @@ const UserProfile = () => {
       if (id === 'AM001') {
         setIsLoading(true);
         try {
-          const response = await fetch('https://anas42.app.n8n.cloud/webhook-test/2088f349-676c-45c5-a6cd-10598fd7e526', {
+          const response = await fetch('https://anas42.app.n8n.cloud/webhook/2088f349-676c-45c5-a6cd-10598fd7e526', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
