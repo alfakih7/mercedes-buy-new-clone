@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Admin from './Admin';
+import UserProfile from './pages/UserProfile';
 
 const NAV_ITEMS = [
   { label: "Our Models" },
@@ -54,6 +55,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/admin" element={<Admin />} />
+        <Route path="/user/:id" element={<UserProfile />} />
         <Route path="/" element={
           <div style={{ minHeight: "100vh", background: "#f2f2f2", display: "flex", flexDirection: "column" }}>
             {/* Top bar */}
