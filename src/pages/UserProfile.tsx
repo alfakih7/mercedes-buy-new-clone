@@ -2163,7 +2163,7 @@ Please analyze the cars data and select the 3 most budget-friendly options that 
           maxWidth: "90%",
           lineHeight: "1.6"
         }}>
-          Based on your preferences and conversation history, we've identified these budget-friendly options from our collection that might interest you:
+          Based on your preferences and conversation history, we've identified these budget-friendly options from our collection that might interest the customer:
         </p>
         
         {suggestionError ? (
