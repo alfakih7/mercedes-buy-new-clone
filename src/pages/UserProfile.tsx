@@ -121,8 +121,27 @@ const UserProfile = () => {
           const data = await response.json();
           setConversationData(data);
           
-          // Update user data with the conversation data if needed
+          // Store in localStorage and print for debugging
           if (data.transcript) {
+            // Store the transcript in localStorage
+            localStorage.setItem('ahmed_transcript', data.transcript);
+            
+            // Store the intent if it exists
+            if (data.intent) {
+              localStorage.setItem('ahmed_intent', data.intent);
+            }
+            
+            // Print the transcript to the console for debugging
+            console.log('--------- WEBHOOK RESPONSE RECEIVED ---------');
+            console.log('Transcript stored in localStorage:');
+            console.log(data.transcript);
+            console.log('---------------------------------------------');
+            
+            if (data.intent) {
+              console.log('Intent stored in localStorage:', data.intent);
+            }
+            
+            // Update user data with the conversation data
             setUserData(prevData => ({
               ...prevData,
               interactionSummary: {
@@ -130,6 +149,8 @@ const UserProfile = () => {
                 next_actions: data.intent ? [data.intent] : []
               }
             }));
+          } else {
+            console.warn('No transcript received from the webhook response');
           }
           
         } catch (err) {
@@ -183,14 +204,21 @@ const UserProfile = () => {
       let conversationText = "";
       
       try {
-        // First try the original path
-        response = await fetch('/src/AM001-no.txt');
-        if (response.ok) {
-          conversationText = await response.text();
-          console.log("Conversation data fetched from /src/AM001-no.txt, length:", conversationText.length);
+        // Instead of fetching from file, get from localStorage
+        conversationText = localStorage.getItem('ahmed_transcript') || "";
+        if (conversationText) {
+          console.log("Conversation data retrieved from localStorage, length:", conversationText.length);
+        } else {
+          console.warn("No conversation data found in localStorage");
+          // Try to fetch as fallback only if localStorage is empty
+          response = await fetch('/src/AM001-no.txt');
+          if (response.ok) {
+            conversationText = await response.text();
+            console.log("Fallback: Conversation data fetched from /src/AM001-no.txt, length:", conversationText.length);
+          }
         }
       } catch (fetchError) {
-        console.warn("Failed to fetch from first path:", fetchError);
+        console.warn("Error accessing data:", fetchError);
       }
       
       // If first attempt failed, try an alternative path
@@ -381,13 +409,14 @@ Return your response in the following JSON format:
       
       try {
         // 1. Fetch the conversation data
-        const response = await fetch('/src/AM001-no.txt');
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch conversation data');
+        const conversationText = localStorage.getItem('ahmed_transcript') || "";
+        console.log("Retrieved conversation text from localStorage for summary generation, length:", conversationText ? conversationText.length : 0);
+
+        // Check if we have data
+        if (!conversationText) {
+          console.warn("No conversation data found in localStorage for summary generation");
+          throw new Error('No conversation transcript available');
         }
-        
-        const conversationText = await response.text();
         
         // 2. Call OpenAI API
         const apiKey = "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";
@@ -470,15 +499,15 @@ Return your response in the following JSON format:
       const carsData = await response.json();
       
       // 2. Fetch the conversation data
-      let conversationText = "";
-      try {
-        const convResponse = await fetch('/src/AM001-no.txt');
-        if (convResponse.ok) {
-          conversationText = await convResponse.text();
-        }
-      } catch (fetchError) {
-        console.warn("Failed to fetch conversation data:", fetchError);
+      console.log("Retrieving transcript from localStorage for budget suggestions");
+      const conversationText = localStorage.getItem('ahmed_transcript') || "";
+      console.log("Retrieved transcript from localStorage for suggestions:", conversationText ? `${conversationText.substring(0, 100)}...` : "none");
+
+      if (!conversationText) {
+        console.warn("No conversation transcript found in localStorage for budget suggestions");
       }
+
+      console.log("Using conversation text for budget suggestions, length:", conversationText.length);
       
       // 3. Call OpenAI API for personalized budget-friendly suggestions
       const apiKey = "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";
@@ -494,11 +523,11 @@ Return your response in the following JSON format:
           messages: [
             { 
               role: "system", 
-              content: "You are a vehicle recommendation assistant for Gargash Motors. Your task is to recommend the top 3 budget-friendly vehicles from the available inventory that best match the customer's preferences and needs the budget is on the conversations of the costumer. even if the budget its not their analyze and suggest based on the interactions and ton and so" 
+              content: "You are a vehicle recommendation assistant for Gargash Motors. Your task is to recommend the top 3 budget-friendly vehicles from the available inventory that best match the customer's preferences and needs the budget is on the conversations of the costumer. even if the budget its not their analyze and suggest based on the interactions." 
             },
             { 
               role: "user", 
-              content: `Based on this customer's budget, profile, interests, and conversation history, recommend the top 3 most budget-friendly vehicles from our inventory that would suit their needs and if possible make from different brands.
+              content: `Based on this customer's budget, profile, interests, and conversation history, recommend the top 3 most budget-friendly vehicles from our inventory that would suit their needs.
 
 CUSTOMER PROFILE:
 Name: ${userData.name}
@@ -2134,7 +2163,7 @@ Please analyze the cars data and select the 3 most budget-friendly options that 
           maxWidth: "90%",
           lineHeight: "1.6"
         }}>
-          Based on your preferences and conversation history, we've identified these budget-friendly options from our collection that might interest you:
+          Based on your preferences and conversation history, we've identified these budget-friendly options from our collection that might interest the customer:
         </p>
         
         {suggestionError ? (
