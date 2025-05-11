@@ -13,6 +13,7 @@ const NAV_ITEMS = [
   { label: "Services", link: "/" },
   { label: "Our Brands", link: "/" },
   { label: "Technology", link: "/" },
+  { label: "Gargash AI", link: "/gargash-agents" },
 ];
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
@@ -110,7 +111,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div><Link to="/" style={{ color: "#ededed", textDecoration: "none", display: "block", marginBottom: 2 }}>Find a Showroom</Link></div>
           </div>
           <div style={{ flex: 1, minWidth: 180 }}>
+            <div style={{ fontWeight: 600, marginBottom: 8 }}>Gargash Services</div>
             <div><Link to="/profile" style={{ color: "#ededed", textDecoration: "none", display: "block", marginBottom: 2 }}>My Profile</Link></div>
+            <div><Link to="/gargash-agents" style={{ color: "#ededed", textDecoration: "none", display: "block", marginBottom: 2 }}>Gargash AI Assistants</Link></div>
+            <div><Link to="/conversations" style={{ color: "#ededed", textDecoration: "none", display: "block", marginBottom: 2 }}>My Conversations</Link></div>
             <div><Link to="/" style={{ color: "#ededed", textDecoration: "none", display: "block", marginBottom: 2 }}>Saved Cars</Link></div>
             <div><Link to="/" style={{ color: "#ededed", textDecoration: "none", display: "block", marginBottom: 2 }}>Test Drive History</Link></div>
           </div>
