@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Your API key should be stored in an environment variable in production
-const API_KEY = 'AIzaSyCz5LVBN71WXDTxwJtZPWxl_laPK2Qjums';
+
+const API_KEY = '';
 
 export interface TranscriptData {
   customerId: string;
